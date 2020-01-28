@@ -1,21 +1,20 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import router from '@/router'
+import gql from 'graphql-tag'
+import { apolloClient } from '@/vue-apollo.js'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    feeds: [
-      { name: 'Puget Sound Region', location: 'Seattle, WA', id: 'sea-reg' },
-      { name: 'WTA', location: 'Bellingham, WA', id: 'wta' },
-      { name: 'Santa Cruz Metro', location: 'Santa Cruz, CA', id: '2' },
-      { name: 'Paris Region', location: 'Paris, France', id: '3' }
-    ],
+    feeds: [ ],
     views: [
       { name: 'High Altitude', icon: 'plane', path: 'dash', id: 0 },
       { name: 'Map', icon: 'map', path: 'map', id: 1 }
     ],
+    routes: [],
+    stops: [],
     currentFeed: null
   },
   mutations: {
@@ -25,11 +24,58 @@ export default new Vuex.Store({
     clearFeed (state) {
       state.currentFeed = null
       router.push('/')
+    },
+    setFeeds (state, feeds) {
+      state.feeds = feeds
+    },
+    setRoutes (state, routes) {
+      state.routes = routes
+    },
+    setStops (state, stops) {
+      state.stops = stops
     }
   },
   actions: {
-    async getFeeds () {
-
+    async getRoutes (context) {
+      const { data } = await apolloClient.query({
+        query: gql`
+        query routes { 
+          feed(feed_index: ${context.state.currentFeed.feed_index}) {
+            routes {
+              route_short_name
+            }
+          }
+        }
+        `
+      })
+      context.commit('setRoutes', data.feed.routes)
+    },
+    async getStops (context) {
+      const { data } = await apolloClient.query({
+        query: gql`
+        query stops { 
+          feed(feed_index: ${context.state.currentFeed.feed_index}) {
+            stops {
+              stop_name
+            }
+          }
+        }
+        `
+      })
+      context.commit('setStops', data.feed.stops)
+    },
+    async getFeeds (context) {
+      const { data } = await apolloClient.query({
+        query: gql`
+        query feeds {
+          feeds {
+            feed_publisher_name
+            feed_index
+            feed_location_friendly
+          }
+        }
+      ` })
+      context.commit('setFeeds', data.feeds)
     }
   },
   modules: {

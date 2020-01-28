@@ -16,8 +16,10 @@
     </div>
     <div v-if="currentFeed" class="text-white p-4 text-white font-bold">
       <font-awesome-icon v-on:click="clearFeed" class="mx-3 cursor-pointer" size="lg" icon="times" />
-      {{currentFeed.name}}
-      <small class="font-normal px-2 text-gray-400">{{currentFeed.location}}</small>
+      {{currentFeed.feed_publisher_name}}
+      <small
+        class="font-normal px-2 text-gray-400"
+      >{{currentFeed.feed_location_friendly}}</small>
     </div>
     <div class="block lg:hidden">
       <button

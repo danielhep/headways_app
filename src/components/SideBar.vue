@@ -12,13 +12,15 @@
           placeholder="Search"
         />
       </li>
-      <li v-for="feed in feeds" v-bind:key="feed.id">
+      <li v-for="feed in feeds" v-bind:key="feed.feed_index">
         <a
           class="block p-4 text-white font-bold border-gray-800 hover:border-purple-700 hover:bg-gray-900 border-r-4"
           v-on:click="selectFeed(feed)"
         >
-          {{feed.name}}
-          <small class="font-normal px-2 text-gray-400">{{feed.location}}</small>
+          {{feed.feed_publisher_name}}
+          <small
+            class="font-normal px-2 text-gray-400"
+          >{{feed.feed_location_friendly}}</small>
         </a>
       </li>
     </ul>
@@ -26,7 +28,7 @@
       <li v-for="view in views" v-bind:key="view.id">
         <router-link
           active-class="border-purple-700"
-          :to="{name: view.name, params: {feed: currentFeed.id}}"
+          :to="{name: view.name, params: {feed: currentFeed.feed_index}}"
           class="block p-4 text-white font-bold border-gray-800 hover:border-purple-700 hover:bg-gray-900 border-r-8 outline-none"
         >
           <font-awesome-icon class="mx-2" :icon="view.icon" />
@@ -59,15 +61,11 @@ export default {
   methods: {
     selectFeed: function (feed) {
       this.$store.commit('setFeed', feed)
-      this.$router.push({ name: 'Dashboard', params: { feed: feed.id } })
+      this.$router.push({ name: 'Dashboard', params: { feed: feed.feed_index } })
     }
   },
-  mounted: function () {
-    if (this.selectFeedMode & !this.$store.state.feeds) {
-      this.loadingFeeds = true
-      this.$store.dispatch('getFeeds')
-      this.loadingFeeds = false
-    }
+  created: function () {
+    this.$store.dispatch('getFeeds')
   }
 }
 </script>
