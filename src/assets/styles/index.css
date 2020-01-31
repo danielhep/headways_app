@@ -9,4 +9,8 @@
     @apply border-purple-700
 }
 
+.route-chip {
+    @apply bg-gray-200 cursor-pointer text-black px-1 rounded-lg mx-1 border-2 text-xs inline
+}
+
 @tailwind utilities;
