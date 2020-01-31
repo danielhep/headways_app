@@ -1,4 +1,5 @@
-# rapid_ui
+# Headways App
+Frontend for Rapid GraphQL API.
 
 ## Project setup
 ```
