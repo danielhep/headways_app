@@ -55,20 +55,20 @@ export default new Vuex.Store({
         query: gql`
         query stops { 
           feed(feed_index: ${context.state.currentFeed.feed_index}) {
-            stops {
-              stop_name
-            }
+            stops_json
           }
         }
         `
       })
-      context.commit('setStops', data.feed.stops)
+      context.commit('setStops', data.feed.stops_json)
     },
     async getFeeds (context) {
       const { data } = await apolloClient.query({
         query: gql`
         query feeds {
           feeds {
+            feed_lat
+            feed_lon
             feed_publisher_name
             feed_index
             feed_location_friendly

@@ -1,22 +1,18 @@
 <template>
   <multipane @paneResize="paneresize" class="vertical-panes">
     <div class="w-2/3">
-      <Map @mapLoaded="mapLoaded" class="h-screen" />
+      <Map @mapLoaded="mapLoaded" @stopSelected="stopSelected" class="h-screen" />
     </div>
     <multipane-resizer class="bg-purple-700" />
 
     <div class="p-3 px-5">
       <div class="pb-2">
         <h2 class="inline font-display text-3xl">Stop Info</h2>
-        <small class="text-small text-gray-400 px-3">ID:</small>
-        <small class="text-small text-gray-400 px-3">Stop Name:</small>
+        <small class="text-small text-gray-400 px-3">ID:{{selectedStop.stop_id}}</small>
+        <small class="text-small text-gray-400 px-3">Stop Name: {{selectedStop.stop_name}}</small>
       </div>
-      <small
-        class="bg-gray-200 cursor-pointer text-black text-small p-1 rounded-lg mx-2 border-2 hover:border-purple-700"
-      >Google Maps</small>
-      <small
-        class="bg-gray-200 cursor-pointer text-black text-small p-1 rounded-lg mx-2"
-      >Stop Explorer</small>
+      <small class="small-button" @click="openGoogleMaps(selectedStop)">Google Maps</small>
+      <small class="small-button">Stop Explorer</small>
     </div>
   </multipane>
 </template>
@@ -29,7 +25,8 @@ export default {
   components: { Map, Multipane, MultipaneResizer },
   data: function () {
     return {
-      infoDrawer: false
+      infoDrawer: false,
+      selectedStop: {}
     }
   },
   methods: {
@@ -39,6 +36,13 @@ export default {
     mapLoaded: function (e) {
       // in component
       this.map = e.map
+    },
+    stopSelected: function (stop) {
+      this.selectedStop = stop
+    },
+    openGoogleMaps: function (stop) {
+      const url = `https://www.google.com/maps/search/?api=1&query=${stop.stop_lat},${stop.stop_lon}`
+      window.open(url)
     }
   }
 }
