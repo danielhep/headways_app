@@ -1,5 +1,5 @@
 <template>
-  <multipane @paneResize="paneresize" class="vertical-panes">
+  <multipane @paneResize="paneResize" class="vertical-panes">
     <div class="w-2/3">
       <Map @mapLoaded="mapLoaded" @stopSelected="stopSelected" class="h-screen" />
     </div>
@@ -8,11 +8,13 @@
     <div class="p-3 px-5">
       <div class="pb-2">
         <h2 class="inline font-display text-3xl">Stop Info</h2>
-        <small class="text-small text-gray-400 px-3">ID:{{selectedStop.stop_id}}</small>
-        <small class="text-small text-gray-400 px-3">Stop Name: {{selectedStop.stop_name}}</small>
+        <small class="text-small text-gray-400 px-2">ID:{{selectedStop.stop_id}}</small>
+        <small class="text-small text-gray-400 px-2">Stop Name: {{selectedStop.stop_name}}</small>
       </div>
       <small class="small-button" @click="openGoogleMaps(selectedStop)">Google Maps</small>
       <small class="small-button">Stop Explorer</small>
+      <br />
+      <h2 class="inline font-display text-3xl">Served by routes:</h2>
     </div>
   </multipane>
 </template>
@@ -20,6 +22,8 @@
 <script>
 import Map from '@/components/Map.vue'
 import { Multipane, MultipaneResizer } from 'vue-multipane'
+import gql from 'graphql-tag'
+import { mapState } from 'vuex'
 
 export default {
   components: { Map, Multipane, MultipaneResizer },
@@ -30,19 +34,42 @@ export default {
     }
   },
   methods: {
-    paneresize: function () {
+    paneResize: function () {
       this.map.resize() // or this.$store.map.resize();
     },
     mapLoaded: function (e) {
       // in component
       this.map = e.map
     },
-    stopSelected: function (stop) {
+    stopSelected: async function (stop) {
       this.selectedStop = stop
     },
     openGoogleMaps: function (stop) {
       const url = `https://www.google.com/maps/search/?api=1&query=${stop.stop_lat},${stop.stop_lon}`
       window.open(url)
+    }
+  },
+  computed: mapState(['currentFeed']),
+  apollo: {
+    stopInfo: {
+      query: gql`query StopInfo($stopID: ID, $feedIndex: Int) {
+        feed(feed_index: $feedIndex) {
+          stop(stop_id: $stopID) {
+            routes {
+              route_short_name
+            }
+          }
+        }
+      }`,
+      variables () {
+        return {
+          feedIndex: this.currentFeed.feed_index,
+          stopID: this.selectedStop.stop_id.toString()
+        }
+      },
+      skip () {
+        return !this.selectedStop || !this.currentFeed
+      }
     }
   }
 }
@@ -51,7 +78,6 @@ export default {
 <style scoped>
 .vertical-panes {
   width: 100%;
-
   height: 100%;
 }
 

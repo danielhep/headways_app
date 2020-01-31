@@ -23,6 +23,8 @@ export default new Vuex.Store({
     },
     clearFeed (state) {
       state.currentFeed = null
+      state.routes = []
+      state.stops = []
       router.push('/')
     },
     setFeeds (state, feeds) {
@@ -37,45 +39,74 @@ export default new Vuex.Store({
   },
   actions: {
     async getRoutes (context) {
-      const { data } = await apolloClient.query({
-        query: gql`
-        query routes { 
-          feed(feed_index: ${context.state.currentFeed.feed_index}) {
-            routes {
-              route_short_name
+      console.log(context.state.routes)
+      if (!context.state.routes.length) {
+        const { data } = await apolloClient.query({
+          query: gql`
+          query routes { 
+            feed(feed_index: ${context.state.currentFeed.feed_index}) {
+              routes {
+                route_short_name
+              }
             }
           }
-        }
-        `
-      })
-      context.commit('setRoutes', data.feed.routes)
+          `
+        })
+        context.commit('setRoutes', data.feed.routes)
+      }
     },
     async getStops (context) {
+      if (!context.state.stops.length) {
+        const { data } = await apolloClient.query({
+          query: gql`
+          query stops { 
+            feed(feed_index: ${context.state.currentFeed.feed_index}) {
+              stops_json
+            }
+          }
+          `
+        })
+        context.commit('setStops', data.feed.stops_json)
+      }
+    },
+    async getInfoOnStop (context, stopID) {
+      console.log(stopID)
       const { data } = await apolloClient.query({
         query: gql`
-        query stops { 
-          feed(feed_index: ${context.state.currentFeed.feed_index}) {
-            stops_json
+          query stopInfo {
+            feed(feed_index ${context.state.currentFeed.feed_index}) {
+              stop(stop_id: ${stopID}) {
+                stop_times(date: "1-31-2020") {
+                  trip {
+                    route {
+                      route_short_name
+                    }
+                  }
+                }
+              }
+            }
           }
-        }
         `
       })
-      context.commit('setStops', data.feed.stops_json)
+      console.log(data)
+      return data
     },
     async getFeeds (context) {
-      const { data } = await apolloClient.query({
-        query: gql`
-        query feeds {
-          feeds {
-            feed_lat
-            feed_lon
-            feed_publisher_name
-            feed_index
-            feed_location_friendly
+      if (!context.state.feeds.length) {
+        const { data } = await apolloClient.query({
+          query: gql`
+          query feeds {
+            feeds {
+              feed_lat
+              feed_lon
+              feed_publisher_name
+              feed_index
+              feed_location_friendly
+            }
           }
-        }
-      ` })
-      context.commit('setFeeds', data.feeds)
+        ` })
+        context.commit('setFeeds', data.feeds)
+      }
     }
   },
   modules: {

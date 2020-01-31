@@ -1,6 +1,12 @@
  <template>
   <!--Metric Card-->
   <div class="bg-purple-900 border-b-4 border-purple-300 rounded-lg shadow-lg p-5">
+    <vue-element-loading
+      background-color="rgba(0, 0, 0, .6)"
+      :active="loading"
+      color="white"
+      spinner="bar-fade-scale"
+    />
     <div class="flex flex-row items-center">
       <div class="flex-shrink">
         <font-awesome-icon class="text-white" :icon="icon" size="2x" />
@@ -18,6 +24,12 @@
 
 <script>
 export default {
-  props: ['title', 'icon']
+  props: ['title', 'icon', 'loading']
 }
 </script>
+
+<style scoped>
+svg > * {
+  fill: currentColor;
+}
+</style>

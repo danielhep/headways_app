@@ -1,8 +1,8 @@
 <template>
   <div
     class="bg-gray-800 border-solid border-purple-700 border-r-4 min-h-full"
-    v-bind:class="{'w-1/3': selectFeedMode, 'min-w-32': !selectFeedMode}"
-    style="transition: all .5s ease"
+    v-bind:class="{'w-1/3': selectFeedMode, 'w-48': !selectFeedMode}"
+    style="transition: width .5s ease"
   >
     <ul v-if="selectFeedMode" class="list-reset min-h-full">
       <li class="text-white bg-purple-700 p-4">
