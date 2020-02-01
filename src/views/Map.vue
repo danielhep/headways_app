@@ -1,7 +1,7 @@
 <template>
   <multipane @paneResize="paneResize" class="vertical-panes">
     <div class="w-2/3">
-      <Map @mapLoaded="mapLoaded" @stopSelected="stopSelected" class="h-screen" />
+      <Map @mapLoaded="mapLoaded" @stopSelected="stopSelected" />
     </div>
     <multipane-resizer class="bg-purple-700" />
 

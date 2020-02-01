@@ -7,7 +7,10 @@
     </div>
     <div class="border-b-2 border-white pb-4 w-full">
       <small class="small-button" @click="openGoogleMaps(selectedStop)">Google Maps</small>
-      <small class="small-button">Stop Explorer</small>
+      <router-link
+        class="small-button"
+        :to="{name: 'Stop Explorer', params: {feed: this.currentFeed.feed_index}, query: {stop: selectedStop.stop_id}}"
+      >Stop Explorer</router-link>
     </div>
     <div>
       <h2 class="inline font-display text-3xl">Served by routes:</h2>
@@ -26,6 +29,7 @@ export default {
   props: ['selectedStop'],
   data: function () {
     return {
+      fields: ['trip.route.route_short_name', 'trip.trip_headsign', 'departure_time'],
       stopInfo: {
         stop: {
           routes: []
@@ -41,6 +45,9 @@ export default {
   },
   computed: {
     ...mapState(['currentFeed']),
+    stopTimes () {
+      return this.stopInfo.stop.stop_times
+    },
     routes () {
       if (this.stopInfo.stop.routes.length > 0) {
         const routes = this.stopInfo.stop.routes.map(route => route.route_short_name)
@@ -60,6 +67,7 @@ export default {
               route_short_name
               route_id
             }
+            
           }
         }
       }`,

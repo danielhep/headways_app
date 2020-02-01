@@ -25,8 +25,14 @@ const routes = [
     showInSidebar: true,
     icon: 'map',
     component: () => import('../views/Map.vue')
+  },
+  {
+    path: '/:feed/stop',
+    name: 'Stop Explorer',
+    showInSidebar: true,
+    icon: 'map-marker-alt',
+    component: () => import('../views/StopExplorer.vue')
   }
-
 ]
 
 const router = new VueRouter({

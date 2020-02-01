@@ -2,7 +2,6 @@
   <MglMap
     :center="[this.currentFeed.feed_lon, this.currentFeed.feed_lat]"
     :zoom="zoom"
-    class="w-full"
     @load="mapboxLoaded"
     :accessToken="mapboxKey"
     :mapStyle="mapStyle"
