@@ -1,111 +1,29 @@
 <template>
-  <div>
-    <table>
-      <thead>
-        <tr>
-          <th>Time</th>
-          <th>Route</th>
-          <th>Headsign</th>
-          <th>Gap</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr
-          :class="{'bg-gray-900': time.is_even_hour}"
-          v-for="time in stopSchedule"
-          :key="time.trip.trip_id"
-        >
-          <td>{{time.departure_time_readable}}</td>
-          <td>{{time.trip.route.route_short_name}}</td>
-          <td>{{time.trip.trip_headsign}}</td>
-          <td>
-            {{time.time_since_last_readable}}
-            <font-awesome-icon v-if="isFrequent(time.time_since_last)" icon="check-square" />
-          </td>
-        </tr>
-      </tbody>
-    </table>
+  <div class="flex flex-row">
+    <div class="flex-grow">
+      <stop-times-table :stopID="stopID" :fsThreshold="fsThreshold" :feedIndex="feedIndex" />
+    </div>
+    <div style="min-width: 30%" class="px-3">
+      <vue-slider v-model="fsThreshold"></vue-slider>
+    </div>
   </div>
 </template>
 
 <script>
-import gql from 'graphql-tag'
-import { Duration } from 'luxon'
-
+import StopTimesTable from '@/components/StopTimesTable.vue'
 export default {
-  data: function () {
+  components: { StopTimesTable },
+  data () {
     return {
+      fsThreshold: 15
     }
   },
-  methods: {
-    isFrequent (durationStr) {
-      console.log(durationStr)
-      const dur = Duration.fromISO(durationStr)
-      return dur.as('minutes') < 16
-    }
-  },
-  apollo: {
-    stopSchedule: {
-      query: gql`query stopInfo($stopID: ID, $feedIndex: Int) {
-        feed(feed_index: $feedIndex) {
-          stop(stop_id: $stopID) {
-            stop_times(date: "2020-01-31") {
-              departure_time
-              departure_time_readable
-              is_even_hour
-              time_since_last_readable
-              time_since_last
-              stop_headsign
-              trip {
-                trip_id
-                trip_headsign
-                route {
-                  route_short_name
-                }
-              }
-            }
-          }
-        }
-      }`,
-      update: data => data.feed.stop.stop_times,
-      variables () {
-        return {
-          feedIndex: parseInt(this.$route.params.feed),
-          stopID: this.$route.query.stop
-        }
-      },
-      skip () {
-        return !this.$route.query.stop
-      }
-    }
+  computed: {
+    feedIndex () { return parseInt(this.$route.params.feed) },
+    stopID () { return this.$route.query.stop }
   }
 }
 </script>
 
-<style  lang="postcss">
-table {
-  /* @apply m-auto m-4; */
-  width: 50%;
-}
-
-tbody {
-  @apply bg-gray-800 items-center justify-between overflow-y-scroll w-full;
-  height: 50vh;
-}
-
-thead > tr > th {
-  @apply p-3 text-left text-lg bg-purple-900 border-b;
-}
-
-/* th:first-of-type {
-  @apply rounded-tl;
-}
-
-th:last-of-type {
-  @apply rounded-tr;
-} */
-
-td {
-  @apply pl-3;
-}
+<style scoped>
 </style>

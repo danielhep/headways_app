@@ -10,11 +10,14 @@ import { faMapMarkerAlt, faRoute, faClock, faMapMarker, faMap, faPlane, faTimes,
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { gqlProvider } from './vue-apollo'
 import VueElementLoading from 'vue-element-loading'
+import VueSlider from 'vue-slider-component'
+import 'vue-slider-component/theme/default.css'
 
-library.add(faMapMarkerAlt, faRoute, faClock, faMapMarker, faMap, faPlane, faTimes, faCaretLeft, faCheckSquare)
-
+Vue.component('VueSlider', VueSlider)
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 Vue.component('vue-element-loading', VueElementLoading)
+
+library.add(faMapMarkerAlt, faRoute, faClock, faMapMarker, faMap, faPlane, faTimes, faCaretLeft, faCheckSquare)
 
 Vue.config.productionTip = false
 
