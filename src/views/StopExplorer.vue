@@ -1,9 +1,9 @@
 <template>
-  <div class="flex flex-row">
+  <div class="flex flex-row items-start">
     <div class="flex-grow">
       <stop-times-table :stopID="stopID" :fsThreshold="fsThreshold" :feedIndex="feedIndex" />
     </div>
-    <div style="min-width: 30%" class="px-3 pt-2">
+    <div style="min-width: 30%" class="px-3 pt-2 sticky top-0">
       Threshold for frequent service:
       <input
         v-autowidth="{maxWidth: '960px', minWidth: '20px', comfortZone: 0}"

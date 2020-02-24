@@ -15,13 +15,15 @@
         :key="time.trip.trip_id"
       >
         <td>{{time.departure_time_readable}}</td>
-        <td class="whitespace-no-wrap">
-          {{time.time_since_last_readable}}
-          <font-awesome-icon
-            :class="{'opacity-0': !isFrequent(time.time_since_last)}"
-            class="ml-1"
-            icon="check-square"
-          />
+        <td class="whitespace-no-wrap flex flex-row">
+          <span class="flex-grow">{{time.time_since_last.as('minutes').toFixed(1)}}</span>
+          <div class="self-right">
+            <font-awesome-icon
+              :class="{'opacity-0': !isFrequent(time.time_since_last)}"
+              class="ml-2"
+              icon="check-square"
+            />
+          </div>
         </td>
         <td>{{time.trip.route.route_short_name}}</td>
         <td class="w-full">{{time.trip.trip_headsign}}</td>
@@ -41,9 +43,8 @@ export default {
     }
   },
   methods: {
-    isFrequent (durationStr) {
-      const dur = Duration.fromISO(durationStr)
-      return dur.as('minutes') < this.fsThreshold
+    isFrequent (dur) {
+      return dur.as('minutes') <= this.fsThreshold
     }
   },
   apollo: {
@@ -69,7 +70,14 @@ export default {
           }
         }
       }`,
-      update: data => data.feed.stop.stop_times,
+      update: data => {
+        return data.feed.stop.stop_times.map((time) => {
+          // convert the dep time ISO string to an object
+          time.departure_time = Duration.fromISO(time.departure_time)
+          time.time_since_last = Duration.fromISO(time.time_since_last)
+          return time
+        })
+      },
       variables () {
         return {
           feedIndex: this.feedIndex,
@@ -93,14 +101,6 @@ tbody {
 thead > tr > th {
   @apply p-3 text-left text-lg bg-purple-900 border-b;
 }
-
-/* th:first-of-type {
-  @apply rounded-tl;
-}
-
-th:last-of-type {
-  @apply rounded-tr;
-} */
 
 td {
   @apply pl-3;
