@@ -6,7 +6,7 @@
     <div style="min-width: 30%" class="px-3 pt-2 sticky top-0">
       Threshold for frequent service:
       <input
-        v-autowidth="{maxWidth: '960px', minWidth: '20px', comfortZone: 0}"
+        v-autowidth="{maxWidth: '960px', minWidth: '2px', comfortZone: 0}"
         class="small-input"
         v-model="fsThreshold"
         type="number"

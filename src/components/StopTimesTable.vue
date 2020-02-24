@@ -1,6 +1,6 @@
 <template>
   <table class="w-full">
-    <thead>
+    <thead class="main-table-header">
       <tr>
         <th>Time</th>
         <th>Gap</th>
@@ -11,8 +11,11 @@
     <tbody>
       <tr
         :class="{'bg-gray-900': time.is_even_hour}"
-        v-for="time in stopSchedule"
-        :key="time.trip.trip_id"
+        class="border-solid border-gray-700 border-t py-2"
+        v-for="(time, i) in stopSchedule"
+        :key="i"
+        :ref="i"
+        @click="selectRow(i)"
       >
         <td>{{time.departure_time_readable}}</td>
         <td class="whitespace-no-wrap flex flex-row">
@@ -40,11 +43,24 @@ export default {
   props: ['stopID', 'feedIndex', 'fsThreshold'],
   data: function () {
     return {
+      startInd: null,
+      endInd: null,
+      selectEnd: false
     }
   },
   methods: {
     isFrequent (dur) {
       return dur.as('minutes') <= this.fsThreshold
+    },
+    selectRow (i) {
+      console.log(this.$refs[i][0].getBoundingClientRect())
+
+      if (!this.selectEnd) {
+        this.startInd = i
+      } else {
+        this.endInd = i
+      }
+      this.selectEnd = !this.selectEnd
     }
   },
   apollo: {
@@ -98,7 +114,7 @@ tbody {
   height: 50vh;
 }
 
-thead > tr > th {
+thead.main-table-header > tr > th {
   @apply p-3 text-left text-lg bg-purple-900 border-b;
 }
 
