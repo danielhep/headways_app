@@ -13,4 +13,12 @@
     @apply bg-gray-200 cursor-pointer text-black px-1 rounded-lg mx-1 border-2 text-xs inline
 }
 
+.small-input {
+    @apply bg-transparent underline appearance-none;
+}
+
+input[type=number] {
+    -moz-appearance:textfield; /* Firefox */
+}
+
 @tailwind utilities;

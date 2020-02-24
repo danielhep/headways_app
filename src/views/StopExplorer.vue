@@ -3,8 +3,15 @@
     <div class="flex-grow">
       <stop-times-table :stopID="stopID" :fsThreshold="fsThreshold" :feedIndex="feedIndex" />
     </div>
-    <div style="min-width: 30%" class="px-3">
-      <vue-slider v-model="fsThreshold"></vue-slider>
+    <div style="min-width: 30%" class="px-3 pt-2">
+      Threshold for frequent service:
+      <input
+        v-autowidth="{maxWidth: '960px', minWidth: '20px', comfortZone: 0}"
+        class="small-input"
+        v-model="fsThreshold"
+        type="number"
+      /> minutes.
+      <vue-slider :contained="true" v-model="fsThreshold"></vue-slider>
     </div>
   </div>
 </template>

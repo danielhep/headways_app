@@ -3,9 +3,9 @@
     <thead>
       <tr>
         <th>Time</th>
+        <th>Gap</th>
         <th>Route</th>
         <th>Headsign</th>
-        <th>Gap</th>
       </tr>
     </thead>
     <tbody>
