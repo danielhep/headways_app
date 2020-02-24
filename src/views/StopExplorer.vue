@@ -1,32 +1,34 @@
 <template>
   <div>
-    <vuetable :fields="fields" :api-mode="false" :data="stopSchedule" />
+    <table>
+      <thead>
+        <tr>
+          <th>Time</th>
+          <th>Route</th>
+          <th>Headsign</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          :class="{'bg-gray-900': time.is_even_hour}"
+          v-for="time in stopSchedule"
+          :key="time.trip.trip_id"
+        >
+          <td>{{time.departure_time_readable}}</td>
+          <td>{{time.trip.route.route_short_name}}</td>
+          <td>{{time.trip.trip_headsign}}</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>
 
 <script>
 import gql from 'graphql-tag'
-import Vuetable from 'vuetable-2'
 
 export default {
-  components: { Vuetable },
   data: function () {
     return {
-      fields: [
-        {
-          name: 'departure_time',
-          title: 'Time'
-        },
-        {
-          name: 'trip.route.route_short_name',
-          title: 'Route'
-        },
-        {
-          name: 'trip.trip_headsign',
-          title: 'Headsign'
-        }
-      ]
-
     }
   },
   apollo: {
@@ -36,8 +38,12 @@ export default {
           stop(stop_id: $stopID) {
             stop_times(date: "2020-01-31") {
               departure_time
+              departure_time_readable
+              is_even_hour
+              time_since_last
               stop_headsign
               trip {
+                trip_id
                 trip_headsign
                 route {
                   route_short_name
@@ -61,3 +67,31 @@ export default {
   }
 }
 </script>
+
+<style  lang="postcss">
+table {
+  /* @apply m-auto m-4; */
+  width: 50%;
+}
+
+tbody {
+  @apply bg-gray-800 items-center justify-between overflow-y-scroll w-full;
+  height: 50vh;
+}
+
+thead > tr > th {
+  @apply p-3 text-left text-lg bg-purple-900 border-b;
+}
+
+/* th:first-of-type {
+  @apply rounded-tl;
+}
+
+th:last-of-type {
+  @apply rounded-tr;
+} */
+
+td {
+  @apply pl-3;
+}
+</style>
