@@ -24,3 +24,5 @@ export default new Vue({
   apolloProvider: gqlProvider,
   render: h => h(App)
 }).$mount('#app')
+
+console.log('Buses are good.')
