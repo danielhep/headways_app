@@ -17,6 +17,7 @@
     "apollo-link": "^1.2.13",
     "core-js": "^3.4.4",
     "graphql": "^14.6.0",
+    "luxon": "^1.22.0",
     "mapbox-gl": "^1.7.0",
     "tailwindscss": "^0.3.0",
     "vue": "^2.6.10",

@@ -6,6 +6,7 @@
           <th>Time</th>
           <th>Route</th>
           <th>Headsign</th>
+          <th>Gap</th>
         </tr>
       </thead>
       <tbody>
@@ -17,6 +18,10 @@
           <td>{{time.departure_time_readable}}</td>
           <td>{{time.trip.route.route_short_name}}</td>
           <td>{{time.trip.trip_headsign}}</td>
+          <td>
+            {{time.time_since_last_readable}}
+            <font-awesome-icon v-if="isFrequent(time.time_since_last)" icon="check-square" />
+          </td>
         </tr>
       </tbody>
     </table>
@@ -25,10 +30,18 @@
 
 <script>
 import gql from 'graphql-tag'
+import { Duration } from 'luxon'
 
 export default {
   data: function () {
     return {
+    }
+  },
+  methods: {
+    isFrequent (durationStr) {
+      console.log(durationStr)
+      const dur = Duration.fromISO(durationStr)
+      return dur.as('minutes') < 16
     }
   },
   apollo: {
@@ -40,6 +53,7 @@ export default {
               departure_time
               departure_time_readable
               is_even_hour
+              time_since_last_readable
               time_since_last
               stop_headsign
               trip {
