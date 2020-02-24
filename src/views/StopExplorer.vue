@@ -11,7 +11,14 @@
         v-model="fsThreshold"
         type="number"
       /> minutes.
-      <vue-slider :contained="true" v-model="fsThreshold"></vue-slider>
+      <vue-slider
+        class="mt-1"
+        tooltip="none"
+        :max="120"
+        :min="1"
+        :contained="true"
+        v-model="fsThreshold"
+      ></vue-slider>
     </div>
   </div>
 </template>

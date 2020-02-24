@@ -18,7 +18,11 @@
 }
 
 input[type=number] {
-    -moz-appearance:textfield; /* Firefox */
+    -moz-appearance: textfield; /* Firefox */
+}
+
+.vue-slider-process {
+    @apply bg-purple-700 !important;
 }
 
 @tailwind utilities;

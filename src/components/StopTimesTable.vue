@@ -19,6 +19,7 @@
           {{time.time_since_last_readable}}
           <font-awesome-icon
             :class="{'opacity-0': !isFrequent(time.time_since_last)}"
+            class="ml-1"
             icon="check-square"
           />
         </td>
