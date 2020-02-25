@@ -1,44 +1,55 @@
 <template>
-  <table class="w-full">
-    <thead class="main-table-header">
-      <tr>
-        <th>Time</th>
-        <th>Gap</th>
-        <th>Route</th>
-        <th>Headsign</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr
-        :class="{'bg-gray-900': time.is_even_hour}"
-        class="border-solid border-gray-700 border-t py-2"
-        v-for="(time, i) in stopSchedule"
-        :key="i"
-        :ref="i"
-        @click="selectRow(i)"
+  <div class="w-full flex flex-row">
+    <table class="self-grow">
+      <thead class="main-table-header">
+        <tr>
+          <th>Time</th>
+          <th>Gap</th>
+          <th>Route</th>
+          <th>Headsign</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          :class="{'bg-gray-900': time.is_even_hour}"
+          class="border-solid border-gray-700 border-b py-2"
+          v-for="(time, i) in stopSchedule"
+          :key="i"
+          :ref="i"
+          @click="selectRow(i)"
+        >
+          <td>{{time.departure_time_readable}}</td>
+          <td class="whitespace-no-wrap flex flex-row">
+            <span class="flex-grow">{{time.time_since_last.as('minutes').toFixed(1)}}</span>
+            <div class="self-right">
+              <font-awesome-icon
+                :class="{'opacity-0': !isFrequent(time.time_since_last)}"
+                class="ml-2"
+                icon="check-square"
+              />
+            </div>
+          </td>
+          <td>{{time.trip.route.route_short_name}}</td>
+          <td class="w-full">{{time.trip.trip_headsign}}</td>
+        </tr>
+      </tbody>
+    </table>
+    <div>
+      <div
+        style="width: 30px"
+        class="absolute bg-purple-900 h-16 flex-col flex justify-center border-b border-white"
       >
-        <td>{{time.departure_time_readable}}</td>
-        <td class="whitespace-no-wrap flex flex-row">
-          <span class="flex-grow">{{time.time_since_last.as('minutes').toFixed(1)}}</span>
-          <div class="self-right">
-            <font-awesome-icon
-              :class="{'opacity-0': !isFrequent(time.time_since_last)}"
-              class="ml-2"
-              icon="check-square"
-            />
-          </div>
-        </td>
-        <td>{{time.trip.route.route_short_name}}</td>
-        <td class="w-full">{{time.trip.trip_headsign}}</td>
-      </tr>
-    </tbody>
-  </table>
+        <font-awesome-icon @click="clear()" class="cursor-pointer block" size="2x" icon="times" />
+      </div>
+      <svg style="stroke: white; width: 30px" id="i-bar" class="h-full" />
+    </div>
+  </div>
 </template>
 
 <script>
 import gql from 'graphql-tag'
 import { Duration } from 'luxon'
-
+import * as d3 from 'd3'
 export default {
   props: ['stopID', 'feedIndex', 'fsThreshold'],
   data: function () {
@@ -52,15 +63,48 @@ export default {
     isFrequent (dur) {
       return dur.as('minutes') <= this.fsThreshold
     },
-    selectRow (i) {
-      console.log(this.$refs[i][0].getBoundingClientRect())
+    clear () {
+      this.startInd = null
+      this.endInd = null
+      this.redraw()
+    },
+    redraw () {
+      const data = [this.startInd, this.endInd].filter(d => d !== null)
+      d3
+        .select('#i-bar')
+        .selectAll('line.mark')
+        .data(data)
+        .join('line')
+        .attr('class', 'mark')
+        .attr('x1', 5)
+        .attr('y1', (d) => (d.offsetTop + (d.getBoundingClientRect().height / 2)))
+        .attr('x2', 25)
+        .attr('y2', (d) => d.offsetTop + (d.getBoundingClientRect().height / 2))
 
-      if (!this.selectEnd) {
-        this.startInd = i
-      } else {
-        this.endInd = i
+      if (data.length === 2) {
+        d3.select('#i-bar')
+          .selectAll('line#connector')
+          .data([{ start: this.startInd, end: this.endInd }])
+          .join('line')
+          .attr('id', 'connector')
+          .attr('x1', 15)
+          .attr('y1', (d) => (d.start.offsetTop + (d.start.getBoundingClientRect().height / 2)))
+          .attr('x2', 15)
+          .attr('y2', (d) => d.end.offsetTop + (d.end.getBoundingClientRect().height / 2))
+      } else if (data.length === 0) {
+        d3.select('#i-bar')
+          .selectAll('line')
+          .remove()
       }
-      this.selectEnd = !this.selectEnd
+    },
+    selectRow (i) {
+      if (!this.startInd) {
+        this.startInd = this.$refs[i][0]
+      } else {
+        this.endInd = this.$refs[i][0]
+      }
+
+      this.redraw()
     }
   },
   apollo: {
@@ -115,7 +159,11 @@ tbody {
 }
 
 thead.main-table-header > tr > th {
-  @apply p-3 text-left text-lg bg-purple-900 border-b;
+  @apply p-3 text-left text-lg bg-purple-900;
+}
+
+thead.main-table-header > tr {
+  @apply border-b h-16 border-white;
 }
 
 td {
