@@ -20,7 +20,8 @@
         >
           <td>{{time.departure_time_readable}}</td>
           <td class="whitespace-no-wrap flex flex-row">
-            <span class="flex-grow">{{time.time_since_last.as('minutes').toFixed(1)}}</span>
+            <span class="flex-grow text-center" v-if="time.time_since_last.invalid">-</span>
+            <span class="flex-grow" v-else>{{time.time_since_last.as('minutes').toFixed(1)}}</span>
             <div class="self-right">
               <font-awesome-icon
                 :class="{'opacity-0': !isFrequent(time.time_since_last)}"
