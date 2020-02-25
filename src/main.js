@@ -4,6 +4,7 @@ import router from './router'
 import store from './store'
 
 import './assets/styles/index.css'
+import 'normalize.css'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faMapMarkerAlt, faRoute, faClock, faMapMarker, faMap, faPlane, faTimes, faCaretLeft, faCheckSquare } from '@fortawesome/free-solid-svg-icons'

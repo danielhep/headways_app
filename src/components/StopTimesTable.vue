@@ -40,7 +40,12 @@
         style="width: 30px"
         class="absolute bg-purple-900 h-16 flex-col flex justify-center border-b border-white"
       >
-        <font-awesome-icon @click="clear()" class="cursor-pointer block" size="2x" icon="times" />
+        <font-awesome-icon
+          @click="clear()"
+          class="m-auto cursor-pointer block"
+          size="2x"
+          icon="times"
+        />
       </div>
       <svg style="stroke: white; width: 30px" id="i-bar" class="h-full" />
     </div>
