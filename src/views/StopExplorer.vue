@@ -1,7 +1,12 @@
 <template>
   <div class="flex flex-row items-start">
     <div class="flex-grow">
-      <stop-times-table :stopID="stopID" :fsThreshold="fsThreshold" :feedIndex="feedIndex" />
+      <stop-times-table
+        @selectedItems="selectedItems"
+        :stopID="stopID"
+        :fsThreshold="fsThreshold"
+        :feedIndex="feedIndex"
+      />
     </div>
     <div style="min-width: 30%" class="px-3 pt-2 sticky top-0">
       Threshold for frequent service:
@@ -19,6 +24,8 @@
         :contained="true"
         v-model="fsThreshold"
       ></vue-slider>
+      <h2>Stats for selection:</h2>
+      <p>Average gap: {{stats.avgGap}}</p>
     </div>
   </div>
 </template>
@@ -29,7 +36,19 @@ export default {
   components: { StopTimesTable },
   data () {
     return {
-      fsThreshold: 15
+      fsThreshold: 15,
+      stats: {
+        avgGap: null
+      }
+    }
+  },
+  methods: {
+    selectedItems (items) {
+      // compute average gap
+      const gapSum = items
+        .filter(entry => !entry.time_since_last.invalid)
+        .reduce((acc, entry) => { return acc + entry.time_since_last.as('minutes') }, 0)
+      this.stats.avgGap = (gapSum / items.length).toFixed(1)
     }
   },
   computed: {

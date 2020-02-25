@@ -69,7 +69,10 @@ export default {
       this.redraw()
     },
     redraw () {
-      const data = [this.startInd, this.endInd].filter(d => d !== null)
+      // filter out blank ones (because endInd is null to start)
+      let data = [this.startInd, this.endInd].filter(d => d !== null)
+      // get the ref for each indici
+      data = data.map((d) => this.$refs[d][0])
       d3
         .select('#i-bar')
         .selectAll('line.mark')
@@ -84,26 +87,29 @@ export default {
       if (data.length === 2) {
         d3.select('#i-bar')
           .selectAll('line#connector')
-          .data([{ start: this.startInd, end: this.endInd }])
+          .data([{ start: data[0], end: data[1] }])
           .join('line')
           .attr('id', 'connector')
           .attr('x1', 15)
           .attr('y1', (d) => (d.start.offsetTop + (d.start.getBoundingClientRect().height / 2)))
           .attr('x2', 15)
           .attr('y2', (d) => d.end.offsetTop + (d.end.getBoundingClientRect().height / 2))
-      } else if (data.length === 0) {
+      } else if (data.length <= 1) {
         d3.select('#i-bar')
-          .selectAll('line')
+          .selectAll('line#connector')
           .remove()
       }
     },
     selectRow (i) {
-      if (!this.startInd) {
-        this.startInd = this.$refs[i][0]
+      if (!this.selectEnd) {
+        this.startInd = i
+        this.endInd = null
       } else {
-        this.endInd = this.$refs[i][0]
+        this.endInd = i
+        const items = this.stopSchedule.slice(this.startInd, this.endInd + 1)
+        this.$emit('selectedItems', items)
       }
-
+      this.selectEnd = !this.selectEnd
       this.redraw()
     }
   },
@@ -135,6 +141,7 @@ export default {
           // convert the dep time ISO string to an object
           time.departure_time = Duration.fromISO(time.departure_time)
           time.time_since_last = Duration.fromISO(time.time_since_last)
+          console.log(time)
           return time
         })
       },
