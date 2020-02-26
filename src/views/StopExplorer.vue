@@ -24,8 +24,9 @@
         :contained="true"
         v-model="fsThreshold"
       ></vue-slider>
-      <h2>Stats for selection:</h2>
+      <h2 class="font-display text-2xl">Stats for selection:</h2>
       <p>Average gap: {{stats.avgGap}}</p>
+      <p>Total runs: {{stats.totRuns}}</p>
     </div>
   </div>
 </template>
@@ -38,6 +39,7 @@ export default {
     return {
       fsThreshold: 15,
       stats: {
+        totRuns: null,
         avgGap: null
       }
     }
@@ -49,6 +51,8 @@ export default {
         .filter(entry => !entry.time_since_last.invalid)
         .reduce((acc, entry) => { return acc + entry.time_since_last.as('minutes') }, 0)
       this.stats.avgGap = (gapSum / items.length).toFixed(1)
+
+      this.stats.totRuns = items.length
     }
   },
   computed: {
