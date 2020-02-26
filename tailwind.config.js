@@ -6,7 +6,11 @@ module.exports = {
     fontFamily: {
       display: ['PT Sans']
     },
-    extend: {}
+    extend: {
+      colors: {
+        'gray-850': '#374357'
+      }
+    }
   },
   variants: {},
   plugins: []

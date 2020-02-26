@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-row items-start">
-    <div class="flex-grow">
+    <div class="flex-grow border-r-2 border-purple-800">
       <stop-times-table
         @selectedItems="selectedItems"
         :stopID="stopID"

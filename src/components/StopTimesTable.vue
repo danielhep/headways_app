@@ -11,7 +11,7 @@
       </thead>
       <tbody>
         <tr
-          :class="{'bg-gray-900': time.is_even_hour}"
+          :class="{'bg-gray-800': time.is_even_hour, 'bg-gray-850': !time.is_even_hour}"
           class="border-solid border-gray-700 border-b py-2"
           v-for="(time, i) in stopSchedule"
           :key="i"
@@ -38,7 +38,7 @@
     <div>
       <div
         style="width: 30px"
-        class="absolute bg-purple-900 h-16 flex-col flex justify-center border-b border-white"
+        class="absolute bg-gray-900 h-16 flex-col flex justify-center border-b border-white"
       >
         <font-awesome-icon
           @click="clear()"
@@ -173,12 +173,12 @@ export default {
 
 <style  lang="postcss">
 tbody {
-  @apply bg-gray-800 items-center justify-between overflow-y-scroll w-full;
+  @apply items-center justify-between overflow-y-scroll w-full;
   height: 50vh;
 }
 
 thead.main-table-header > tr > th {
-  @apply p-3 text-left text-lg bg-purple-900;
+  @apply p-3 text-left text-lg bg-gray-900;
 }
 
 thead.main-table-header > tr {
