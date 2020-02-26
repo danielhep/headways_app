@@ -1,6 +1,6 @@
 <template>
   <div class="w-full flex flex-row">
-    <table class="self-grow">
+    <table class="w-full self-grow">
       <thead class="main-table-header">
         <tr>
           <th>Time</th>
