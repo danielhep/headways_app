@@ -107,9 +107,15 @@ export default {
       }
     },
     selectRow (i) {
+      // if no end point has been selected
       if (!this.selectEnd) {
         this.startInd = i
         this.endInd = null
+      } else if (i < this.startInd) { // we are selecting end point, but end point < start point
+        this.endInd = this.startInd
+        this.startInd = i
+        const items = this.stopSchedule.slice(this.startInd, this.endInd + 1)
+        this.$emit('selectedItems', items)
       } else {
         this.endInd = i
         const items = this.stopSchedule.slice(this.startInd, this.endInd + 1)
@@ -147,7 +153,6 @@ export default {
           // convert the dep time ISO string to an object
           time.departure_time = Duration.fromISO(time.departure_time)
           time.time_since_last = Duration.fromISO(time.time_since_last)
-          console.log(time)
           return time
         })
       },
