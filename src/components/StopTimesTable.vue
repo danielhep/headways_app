@@ -72,6 +72,7 @@ export default {
     clear () {
       this.startInd = null
       this.endInd = null
+      this.$emit('selectedItems', [])
       this.redraw()
     },
     redraw () {
