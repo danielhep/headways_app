@@ -6,6 +6,7 @@
         :stopID="stopID"
         :fsThreshold="fsThreshold"
         :feedIndex="feedIndex"
+        :date="luxonSelectedDate"
       />
     </div>
     <div style="min-width: 30%" class="px-3 pt-2 sticky top-0">
@@ -43,6 +44,7 @@
 
 <script>
 import StopTimesTable from '@/components/StopTimesTable.vue'
+import { DateTime } from 'luxon'
 export default {
   components: { StopTimesTable },
   data () {
@@ -70,7 +72,8 @@ export default {
   },
   computed: {
     feedIndex () { return parseInt(this.$route.params.feed) },
-    stopID () { return this.$route.query.stop }
+    stopID () { return this.$route.query.stop },
+    luxonSelectedDate () { return DateTime.fromJSDate(this.selectedDate) }
   }
 }
 </script>

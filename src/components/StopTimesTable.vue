@@ -57,7 +57,7 @@ import gql from 'graphql-tag'
 import { Duration } from 'luxon'
 import * as d3 from 'd3'
 export default {
-  props: ['stopID', 'feedIndex', 'fsThreshold'],
+  props: ['stopID', 'feedIndex', 'fsThreshold', 'date'],
   data: function () {
     return {
       startInd: null,
@@ -128,10 +128,10 @@ export default {
   },
   apollo: {
     stopSchedule: {
-      query: gql`query stopInfo($stopID: ID, $feedIndex: Int) {
+      query: gql`query stopInfo($stopID: ID, $feedIndex: Int, $date: Date!) {
         feed(feed_index: $feedIndex) {
           stop(stop_id: $stopID) {
-            stop_times(date: "2020-01-31") {
+            stop_times(date: $date) {
               departure_time
               departure_time_readable
               is_even_hour
@@ -160,7 +160,8 @@ export default {
       variables () {
         return {
           feedIndex: this.feedIndex,
-          stopID: this.stopID
+          stopID: this.stopID,
+          date: this.date.toISODate()
         }
       },
       skip () {
