@@ -4,6 +4,7 @@
       <stop-times-table
         v-if="stopData"
         @selectedItems="selectedItems"
+        @selectRoute="(route) => routes=[route]"
         :stopSchedule="stopData.stopSchedule"
         :fsThreshold="fsThreshold"
         :date="luxonSelectedDate"
@@ -37,8 +38,7 @@
         <multiselect
           v-model="routes"
           class="w-full"
-          v-if="!$apollo.loading"
-          :options="stopData.stopInfo.routes"
+          :options="stopData ? stopData.stopInfo.routes : []"
           :multiple="true"
           :close-on-select="false"
           :clear-on-select="false"

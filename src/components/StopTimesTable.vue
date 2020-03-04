@@ -30,7 +30,7 @@
               />
             </div>
           </td>
-          <td>{{time.trip.route.route_short_name}}</td>
+          <td @click="$emit('selectRoute', time.trip.route)">{{time.trip.route.route_short_name}}</td>
           <td class="w-full">{{time.trip.trip_headsign}}</td>
         </tr>
       </tbody>
