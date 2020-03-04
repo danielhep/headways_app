@@ -18,20 +18,28 @@
           :ref="i"
           @click="selectRow(i)"
         >
-          <td>{{time.departure_time_readable}}</td>
-          <td class="whitespace-no-wrap flex flex-row">
-            <span class="flex-grow text-center" v-if="time.time_since_last.invalid">-</span>
-            <span class="flex-grow" v-else>{{time.time_since_last.as('minutes').toFixed(1)}}</span>
-            <div class="self-right">
-              <font-awesome-icon
-                :class="{'opacity-0': !isFrequent(time.time_since_last)}"
-                class="ml-2"
-                icon="check-square"
-              />
+          <td>
+            <p>{{time.departure_time_readable}}</p>
+          </td>
+          <td class="whitespace-no-wrap px-2">
+            <div class="flex flex-row p-0 h-full content-center">
+              <p class="flex-grow" v-if="time.time_since_last.invalid">-</p>
+              <p class="flex-grow" v-else>{{time.time_since_last.as('minutes').toFixed(1)}}</p>
+              <div class="self-end inline">
+                <font-awesome-icon
+                  :class="{'opacity-0': !isFrequent(time.time_since_last)}"
+                  class="ml-2 inline"
+                  icon="check-square"
+                />
+              </div>
             </div>
           </td>
-          <td @click="$emit('selectRoute', time.trip.route)">{{time.trip.route.route_short_name}}</td>
-          <td class="w-full">{{time.trip.trip_headsign}}</td>
+          <td @click="$emit('selectRoute', time.trip.route)">
+            <p>{{time.trip.route.route_short_name}}</p>
+          </td>
+          <td class="w-full">
+            <p>{{time.trip.trip_headsign}}</p>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -142,7 +150,9 @@ thead.main-table-header > tr {
   @apply border-b h-16 border-white;
 }
 
-td {
-  @apply pl-3;
+tbody tr td,
+tbody tr {
+  /* height: 1px !important; */
+  height: 1.5rem;
 }
 </style>

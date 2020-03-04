@@ -67,7 +67,6 @@ export default {
               route_short_name
               route_id
             }
-            
           }
         }
       }`,
