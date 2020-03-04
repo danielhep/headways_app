@@ -34,25 +34,19 @@
         ></vue-slider>
       </div>
       <div>
-        <!-- <multiselect
-          v-model="value"
-          :options="options"
+        <multiselect
+          v-model="routes"
+          v-if="!$apollo.loading"
+          :options="stopData.stopInfo.routes"
           :multiple="true"
           :close-on-select="false"
           :clear-on-select="false"
           :preserve-search="true"
           placeholder="Pick some"
-          label="name"
-          track-by="name"
+          label="route_short_name"
+          track-by="route_id"
           :preselect-first="true"
-        >
-          <template slot="selection" slot-scope="{ values, search, isOpen }">
-            <span
-              class="multiselect__single"
-              v-if="values.length &amp;&amp; !isOpen"
-            >{{ values.length }} options selected</span>
-          </template>
-        </multiselect>-->
+        ></multiselect>
       </div>
       <div v-if="stats.loaded" class="border-t-2 mt-4 pt-4 border-white">
         <h2 class="font-display text-2xl">Stats for selection:</h2>
@@ -67,15 +61,18 @@
 import StopTimesTable from '@/components/StopTimesTable.vue'
 import { DateTime, Duration } from 'luxon'
 
-// import Multiselect from 'vue-multiselect'
+import Multiselect from 'vue-multiselect'
 import gql from 'graphql-tag'
 
+import 'vue-multiselect/dist/vue-multiselect.min.css'
+
 export default {
-  components: { StopTimesTable },
+  components: { StopTimesTable, Multiselect },
   data () {
     return {
       fsThreshold: 15,
       selectedDate: new Date(),
+      routes: [],
       stats: {
         totRuns: null,
         avgGap: null,
@@ -97,11 +94,12 @@ export default {
   computed: {
     feedIndex () { return parseInt(this.$route.params.feed) },
     stopID () { return this.$route.query.stop },
-    luxonSelectedDate () { return DateTime.fromJSDate(this.selectedDate) }
+    luxonSelectedDate () { return DateTime.fromJSDate(this.selectedDate) },
+    selectedRouteIds () { return this.routes.map(val => val.route_id) }
   },
   apollo: {
     stopData: {
-      query: gql`query stopData($stopID: ID, $feedIndex: Int, $date: Date!) {
+      query: gql`query stopData($stopID: ID, $feedIndex: Int, $date: Date!, $routes: [ID]) {
         feed(feed_index: $feedIndex) {
           stop(stop_id: $stopID) {
             stop_code
@@ -110,11 +108,11 @@ export default {
               lat
               long
             }
-            routes {
+            routes(date: $date) {
               route_short_name
               route_id
             }
-            stop_times(date: $date) {
+            stop_times(date: $date, routes: $routes) {
               departure_time
               departure_time_readable
               is_even_hour
@@ -126,6 +124,7 @@ export default {
                 trip_headsign
                 route {
                   route_short_name
+                  route_id
                 }
               }
             }
@@ -148,7 +147,8 @@ export default {
         return {
           feedIndex: this.feedIndex,
           stopID: this.stopID,
-          date: this.luxonSelectedDate.toISODate()
+          date: this.luxonSelectedDate.toISODate(),
+          routes: this.selectedRouteIds
         }
       },
       skip () {
