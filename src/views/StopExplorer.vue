@@ -9,7 +9,7 @@
         :date="luxonSelectedDate"
       />
     </div>
-    <div style="min-width: 30%" class="px-3 pt-2 sticky top-0">
+    <div class="w-1/3 px-3 pt-2 sticky top-0">
       <div>
         Selected date:
         <v-date-picker v-model="selectedDate" is-dark>
@@ -33,9 +33,10 @@
           v-model="fsThreshold"
         ></vue-slider>
       </div>
-      <div>
+      <div class="w-full mt-2">
         <multiselect
           v-model="routes"
+          class="w-full"
           v-if="!$apollo.loading"
           :options="stopData.stopInfo.routes"
           :multiple="true"
@@ -45,7 +46,6 @@
           placeholder="Pick some"
           label="route_short_name"
           track-by="route_id"
-          :preselect-first="true"
         ></multiselect>
       </div>
       <div v-if="stats.loaded" class="border-t-2 mt-4 pt-4 border-white">
@@ -153,6 +153,13 @@ export default {
       },
       skip () {
         return !this
+      }
+    }
+  },
+  watch: {
+    stopData (newData) {
+      if (this.routes.length === 0) {
+        this.routes = newData.stopInfo.routes
       }
     }
   }
