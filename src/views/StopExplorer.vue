@@ -2,10 +2,10 @@
   <div class="flex flex-row items-start">
     <div class="flex-grow border-r-2 border-purple-800">
       <stop-times-table
+        v-if="stopData"
         @selectedItems="selectedItems"
-        :stopID="stopID"
+        :stopSchedule="stopData.stopSchedule"
         :fsThreshold="fsThreshold"
-        :feedIndex="feedIndex"
         :date="luxonSelectedDate"
       />
     </div>
@@ -33,6 +33,27 @@
           v-model="fsThreshold"
         ></vue-slider>
       </div>
+      <div>
+        <!-- <multiselect
+          v-model="value"
+          :options="options"
+          :multiple="true"
+          :close-on-select="false"
+          :clear-on-select="false"
+          :preserve-search="true"
+          placeholder="Pick some"
+          label="name"
+          track-by="name"
+          :preselect-first="true"
+        >
+          <template slot="selection" slot-scope="{ values, search, isOpen }">
+            <span
+              class="multiselect__single"
+              v-if="values.length &amp;&amp; !isOpen"
+            >{{ values.length }} options selected</span>
+          </template>
+        </multiselect>-->
+      </div>
       <div v-if="stats.loaded" class="border-t-2 mt-4 pt-4 border-white">
         <h2 class="font-display text-2xl">Stats for selection:</h2>
         <p>Average gap: {{stats.avgGap}}</p>
@@ -44,7 +65,11 @@
 
 <script>
 import StopTimesTable from '@/components/StopTimesTable.vue'
-import { DateTime } from 'luxon'
+import { DateTime, Duration } from 'luxon'
+
+// import Multiselect from 'vue-multiselect'
+import gql from 'graphql-tag'
+
 export default {
   components: { StopTimesTable },
   data () {
@@ -66,7 +91,6 @@ export default {
         .filter(entry => !entry.time_since_last.invalid)
         .reduce((acc, entry) => { return acc + entry.time_since_last.as('minutes') }, 0)
       this.stats.avgGap = (gapSum / items.length).toFixed(1)
-
       this.stats.totRuns = items.length
     }
   },
@@ -74,6 +98,63 @@ export default {
     feedIndex () { return parseInt(this.$route.params.feed) },
     stopID () { return this.$route.query.stop },
     luxonSelectedDate () { return DateTime.fromJSDate(this.selectedDate) }
+  },
+  apollo: {
+    stopData: {
+      query: gql`query stopData($stopID: ID, $feedIndex: Int, $date: Date!) {
+        feed(feed_index: $feedIndex) {
+          stop(stop_id: $stopID) {
+            stop_code
+            stop_name
+            loc {
+              lat
+              long
+            }
+            routes {
+              route_short_name
+              route_id
+            }
+            stop_times(date: $date) {
+              departure_time
+              departure_time_readable
+              is_even_hour
+              time_since_last_readable
+              time_since_last
+              stop_headsign
+              trip {
+                trip_id
+                trip_headsign
+                route {
+                  route_short_name
+                }
+              }
+            }
+          }
+        }
+      }`,
+      update: data => {
+        const stopSchedule = data.feed.stop.stop_times.map((time) => {
+          // convert the dep time ISO string to an object
+          time.departure_time = Duration.fromISO(time.departure_time)
+          time.time_since_last = Duration.fromISO(time.time_since_last)
+          return time
+        })
+
+        const stopInfo = data.feed.stop
+
+        return { stopSchedule, stopInfo }
+      },
+      variables () {
+        return {
+          feedIndex: this.feedIndex,
+          stopID: this.stopID,
+          date: this.luxonSelectedDate.toISODate()
+        }
+      },
+      skip () {
+        return !this
+      }
+    }
   }
 }
 </script>

@@ -53,11 +53,10 @@
 </template>
 
 <script>
-import gql from 'graphql-tag'
-import { Duration } from 'luxon'
 import * as d3 from 'd3'
+
 export default {
-  props: ['stopID', 'feedIndex', 'fsThreshold', 'date'],
+  props: ['stopSchedule', 'fsThreshold', 'date'],
   data: function () {
     return {
       startInd: null,
@@ -124,49 +123,6 @@ export default {
       }
       this.selectEnd = !this.selectEnd
       this.redraw()
-    }
-  },
-  apollo: {
-    stopSchedule: {
-      query: gql`query stopInfo($stopID: ID, $feedIndex: Int, $date: Date!) {
-        feed(feed_index: $feedIndex) {
-          stop(stop_id: $stopID) {
-            stop_times(date: $date) {
-              departure_time
-              departure_time_readable
-              is_even_hour
-              time_since_last_readable
-              time_since_last
-              stop_headsign
-              trip {
-                trip_id
-                trip_headsign
-                route {
-                  route_short_name
-                }
-              }
-            }
-          }
-        }
-      }`,
-      update: data => {
-        return data.feed.stop.stop_times.map((time) => {
-          // convert the dep time ISO string to an object
-          time.departure_time = Duration.fromISO(time.departure_time)
-          time.time_since_last = Duration.fromISO(time.time_since_last)
-          return time
-        })
-      },
-      variables () {
-        return {
-          feedIndex: this.feedIndex,
-          stopID: this.stopID,
-          date: this.date.toISODate()
-        }
-      },
-      skip () {
-        return !this
-      }
     }
   }
 }
