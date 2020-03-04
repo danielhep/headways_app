@@ -9,22 +9,30 @@
       />
     </div>
     <div style="min-width: 30%" class="px-3 pt-2 sticky top-0">
-      Threshold for frequent service:
-      <input
-        v-autowidth="{maxWidth: '960px', minWidth: '10px', comfortZone: 0}"
-        class="small-input"
-        v-model="fsThreshold"
-        type="number"
-      /> minutes.
-      <vue-slider
-        class="mt-1"
-        tooltip="none"
-        :max="120"
-        :min="1"
-        :contained="true"
-        v-model="fsThreshold"
-      ></vue-slider>
-      <div v-if="stats.loaded">
+      <div>
+        Selected date:
+        <v-date-picker v-model="selectedDate" is-dark>
+          <p class="inline-block small-input pl-1">{{selectedDate.toDateString()}}</p>
+        </v-date-picker>
+      </div>
+      <div class="mt-2">
+        <span>Threshold for frequent service:</span>
+        <input
+          v-autowidth="{maxWidth: '960px', minWidth: '10px', comfortZone: 0}"
+          class="small-input pl-1"
+          v-model="fsThreshold"
+          type="number"
+        /> minutes.
+        <vue-slider
+          class="mt-1"
+          tooltip="none"
+          :max="120"
+          :min="1"
+          :contained="true"
+          v-model="fsThreshold"
+        ></vue-slider>
+      </div>
+      <div v-if="stats.loaded" class="border-t-2 mt-4 pt-4 border-white">
         <h2 class="font-display text-2xl">Stats for selection:</h2>
         <p>Average gap: {{stats.avgGap}}</p>
         <p>Total runs: {{stats.totRuns}}</p>
@@ -40,6 +48,7 @@ export default {
   data () {
     return {
       fsThreshold: 15,
+      selectedDate: new Date(),
       stats: {
         totRuns: null,
         avgGap: null,
