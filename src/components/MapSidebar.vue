@@ -9,7 +9,7 @@
       <small class="small-button" @click="openGoogleMaps(selectedStop)">Google Maps</small>
       <router-link
         class="small-button"
-        :to="{name: 'Stop Explorer', params: {feed: this.currentFeed.feed_index}, query: {stop: selectedStop.stop_id}}"
+        :to="{name: 'Stop Schedule', params: {feed: this.currentFeed.feed_index}, query: {stop: selectedStop.stop_id}}"
       >Stop Explorer</router-link>
     </div>
     <div>
@@ -60,7 +60,7 @@ export default {
   },
   apollo: {
     stopInfo: {
-      query: gql`query stopInfo($stopID: ID, $feedIndex: Int) {
+      query: gql`query stopInfo($stopID: ID!, $feedIndex: Int) {
         feed(feed_index: $feedIndex) {
           stop(stop_id: $stopID) {
             routes {

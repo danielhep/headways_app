@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-row items-start">
+  <div class="flex flex-row items-start" v-if="stopID">
     <div class="flex-grow border-r-2 border-purple-800">
       <stop-times-table
         v-if="stopData"
@@ -50,10 +50,19 @@
       </div>
       <div v-if="stats.loaded" class="border-t-2 mt-4 pt-4 border-white">
         <h2 class="font-display text-2xl">Stats for selection:</h2>
-        <p>Average gap: {{stats.avgGap}}</p>
-        <p>Total runs: {{stats.totRuns}}</p>
+        <p>Average gap: {{stats.avgGap}} minutes.</p>
+        <p>Total runs: {{stats.totRuns}} runs.</p>
       </div>
     </div>
+  </div>
+  <div class="text-center" v-else>
+    <p class="mt-4">Please select a stop on the Map or enter a stop ID below and press enter.</p>
+    <input
+      class="mt-4 bg-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block m-auto appearance-none leading-normal"
+      placeholder="Stop ID"
+      v-model="stopIDInput"
+      @keyup.enter="updateQuery"
+    />
   </div>
 </template>
 
@@ -73,6 +82,7 @@ export default {
       fsThreshold: 15,
       selectedDate: new Date(),
       routes: [],
+      stopIDInput: '',
       stats: {
         totRuns: null,
         avgGap: null,
@@ -89,6 +99,14 @@ export default {
         .reduce((acc, entry) => { return acc + entry.time_since_last.as('minutes') }, 0)
       this.stats.avgGap = (gapSum / items.length).toFixed(1)
       this.stats.totRuns = items.length
+    },
+    updateQuery () {
+      this.$router.replace({
+        query: {
+          ...this.$router.query,
+          stop: this.stopIDInput
+        }
+      })
     }
   },
   computed: {
@@ -99,7 +117,7 @@ export default {
   },
   apollo: {
     stopData: {
-      query: gql`query stopData($stopID: ID, $feedIndex: Int, $date: Date!, $routes: [ID]) {
+      query: gql`query stopData($stopID: ID!, $feedIndex: Int, $date: Date!, $routes: [ID]) {
         feed(feed_index: $feedIndex) {
           stop(stop_id: $stopID) {
             stop_code
@@ -131,17 +149,24 @@ export default {
           }
         }
       }`,
-      update: data => {
-        const stopSchedule = data.feed.stop.stop_times.map((time) => {
-          // convert the dep time ISO string to an object
-          time.departure_time = Duration.fromISO(time.departure_time)
-          time.time_since_last = Duration.fromISO(time.time_since_last)
-          return time
-        })
+      update (data) {
+        const output = {
+          stopSchedule: [],
+          stopInfo: {}
+        }
 
-        const stopInfo = data.feed.stop
+        if (!this.$apollo.queries.stopData.skip) {
+          output.stopSchedule = data.feed.stop.stop_times.map((time) => {
+            // convert the dep time ISO string to an object
+            time.departure_time = Duration.fromISO(time.departure_time)
+            time.time_since_last = Duration.fromISO(time.time_since_last)
+            return time
+          })
 
-        return { stopSchedule, stopInfo }
+          output.stopInfo = data.feed.stop
+        }
+
+        return output
       },
       variables () {
         return {
@@ -152,7 +177,7 @@ export default {
         }
       },
       skip () {
-        return !this
+        return !this || !this.stopID
       }
     }
   },

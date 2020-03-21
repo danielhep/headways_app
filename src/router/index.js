@@ -28,7 +28,7 @@ const routes = [
   },
   {
     path: '/:feed/stop',
-    name: 'Stop Explorer',
+    name: 'Stop Schedule',
     showInSidebar: true,
     icon: 'map-marker-alt',
     component: () => import('../views/StopExplorer.vue')
