@@ -31,4 +31,24 @@ input::-webkit-inner-spin-button {
     @apply bg-purple-700 !important;
 }
 
+.multiselect__tag {
+    @apply bg-purple-700 !important;
+}
+
+.multiselect__tag-icon::after {
+    @apply text-white !important;
+}
+
+.multiselect__tag-icon:hover {
+    @apply bg-purple-900 !important;
+}
+
+.multiselect__tags {
+    @apply bg-transparent !important;
+}
+
+.multiselect__option--highlight {
+    @apply bg-purple-700 font-bold !important;
+}
+
 @tailwind utilities;
