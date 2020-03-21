@@ -3,10 +3,34 @@
     <table class="w-full self-grow">
       <thead class="main-table-header">
         <tr>
-          <th>Time</th>
-          <th>Gap</th>
-          <th>Route</th>
-          <th>Headsign</th>
+          <th class="p-0">
+            <div
+              class="px-4 text-left text-lg bg-purple-900 h-16 border-b border-white flex flex-col justify-center"
+            >
+              <p>Time</p>
+            </div>
+          </th>
+          <th class="p-0">
+            <div
+              class="px-4 text-left text-lg bg-purple-900 h-16 border-b border-white flex flex-col justify-center"
+            >
+              <p>Gap</p>
+            </div>
+          </th>
+          <th class="p-0">
+            <div
+              class="px-4 text-left text-lg bg-purple-900 h-16 border-b border-white flex flex-col justify-center"
+            >
+              <p>Route</p>
+            </div>
+          </th>
+          <th class="p-0">
+            <div
+              class="px-4 text-left text-lg bg-purple-900 h-16 border-b border-white flex flex-col justify-center"
+            >
+              <p>Headsign</p>
+            </div>
+          </th>
         </tr>
       </thead>
       <tbody>
@@ -18,10 +42,12 @@
           :ref="i"
           @click="selectRow(i)"
         >
-          <td>
-            <p>{{time.departure_time_readable}}</p>
+          <td class="px-4">
+            <div>
+              <p>{{time.departure_time_readable}}</p>
+            </div>
           </td>
-          <td class="whitespace-no-wrap px-2">
+          <td class="px-3 whitespace-no-wrap px-2">
             <div class="flex flex-row p-0 h-full content-center">
               <p class="flex-grow" v-if="time.time_since_last.invalid">-</p>
               <p class="flex-grow" v-else>{{time.time_since_last.as('minutes').toFixed(1)}}</p>
@@ -34,10 +60,12 @@
               </div>
             </div>
           </td>
-          <td @click="$emit('selectRoute', time.trip.route)">
-            <p>{{time.trip.route.route_short_name}}</p>
+          <td class="px-3" @click="$emit('selectRoute', time.trip.route)">
+            <div>
+              <p>{{time.trip.route.route_short_name}}</p>
+            </div>
           </td>
-          <td class="w-full">
+          <td class="px-3 w-full">
             <p>{{time.trip.trip_headsign}}</p>
           </td>
         </tr>
@@ -46,13 +74,21 @@
     <div>
       <div
         style="width: 30px"
-        class="absolute bg-gray-900 h-16 flex-col flex justify-center border-b border-white"
+        class="absolute bg-purple-900 h-16 flex-col flex justify-center border-b border-white"
       >
         <font-awesome-icon
+          v-if="startInd || endInd"
           @click="clear()"
-          class="m-auto cursor-pointer block"
+          class="m-auto cursor-pointer block p-1"
           size="2x"
           icon="times"
+        />
+        <font-awesome-icon
+          v-else
+          @click="selectAll()"
+          class="m-auto cursor-pointer block p-1"
+          size="2x"
+          icon="check-double"
         />
       </div>
       <svg style="stroke: white; width: 30px" id="i-bar" class="h-full" />
@@ -80,6 +116,12 @@ export default {
       this.startInd = null
       this.endInd = null
       this.$emit('selectedItems', [])
+      this.redraw()
+    },
+    selectAll () {
+      this.startInd = 0
+      this.endInd = this.stopSchedule.length - 1
+      this.$emit('selectedItems', this.selectedItems)
       this.redraw()
     },
     redraw () {
@@ -122,15 +164,18 @@ export default {
       } else if (i < this.startInd) { // we are selecting end point, but end point < start point
         this.endInd = this.startInd
         this.startInd = i
-        const items = this.stopSchedule.slice(this.startInd, this.endInd + 1)
-        this.$emit('selectedItems', items)
+        this.$emit('selectedItems', this.selectedItems)
       } else {
         this.endInd = i
-        const items = this.stopSchedule.slice(this.startInd, this.endInd + 1)
-        this.$emit('selectedItems', items)
+        this.$emit('selectedItems', this.selectedItems)
       }
       this.selectEnd = !this.selectEnd
       this.redraw()
+    }
+  },
+  computed: {
+    selectedItems () {
+      return this.stopSchedule.slice(this.startInd, this.endInd + 1)
     }
   }
 }
@@ -140,14 +185,6 @@ export default {
 tbody {
   @apply items-center justify-between overflow-y-scroll w-full;
   height: 50vh;
-}
-
-thead.main-table-header > tr > th {
-  @apply p-3 text-left text-lg bg-gray-900;
-}
-
-thead.main-table-header > tr {
-  @apply border-b h-16 border-white;
 }
 
 tbody tr td,
