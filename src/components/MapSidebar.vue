@@ -10,7 +10,7 @@
       <router-link
         class="small-button"
         :to="{name: 'Stop Schedule', params: {feed: this.currentFeed.feed_index}, query: {stop: selectedStop.stop_id}}"
-      >Stop Explorer</router-link>
+      >Stop Schedule</router-link>
     </div>
     <div>
       <h2 class="inline font-display text-3xl">Served by routes:</h2>
