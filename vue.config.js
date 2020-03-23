@@ -2,6 +2,5 @@
 module.exports = {
   // options...
   css: {
-    requireModuleExtension: false
   }
 }
