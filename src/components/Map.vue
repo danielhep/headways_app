@@ -1,78 +1,151 @@
 <template>
-  <MglMap
-    :center="[this.currentFeed.feed_lon, this.currentFeed.feed_lat]"
-    :zoom="zoom"
-    @load="mapboxLoaded"
-    :accessToken="mapboxKey"
-    :mapStyle="mapStyle"
-  >
-    <MglGeojsonLayer sourceId="stops" :source="stopsComplete" layerId="stops" :layer="layerConfig" />
-  </MglMap>
+  <div id="map" class="h-full w-full"></div>
 </template>
 
 <script>
-import Mapbox from 'mapbox-gl'
-import { MglMap, MglGeojsonLayer } from 'vue-mapbox'
+// import 'leaflet'
+import * as L from 'mapbox-gl'
+// import { MarkerClusterGroup } from 'leaflet.markercluster'
+import 'mapbox-gl/dist/mapbox-gl.css'
 import { mapState } from 'vuex'
 
 export default {
-  components: {
-    MglMap, MglGeojsonLayer
-  },
+  props: ['stops'],
   data: function () {
     return {
       mapboxKey: process.env.VUE_APP_MAPBOX_KEY,
       mapStyle: 'mapbox://styles/danielhep/cjz0jqvvh5r7u1cpn9ssas68c',
       zoom: 13,
-      stop: {},
-      layerConfig: {
-        'clustering': true,
-        'type': 'symbol',
-        'layout': {
-          // get the icon name from the source's "icon" property
-          // concatenate the name to get an icon from the style's sprite sheet
-          'icon-image': 'embassy-11'
-        },
-        'paint': {
-          'icon-color': '#0000FF'
-        }
-      }
+      stop: {}
     }
   },
-  created () {
-    this.mapbox = Mapbox
+  mounted () {
+    this.mapbox = L
+
+    L.accessToken = process.env.VUE_APP_MAPBOX_KEY
+
+    const map = new L.Map({
+      container: 'map',
+      center: [this.currentFeed.feed_lon, this.currentFeed.feed_lat],
+      zoom: 13,
+      style: this.mapStyle
+    })
+
+    map.on('load', this.mapboxLoaded)
+    this.map = map
+    this.$store.dispatch('getStops')
   },
   computed: {
-    ...mapState(['stops', 'currentFeed']),
-    stopsComplete: function () {
-      return {
-        'type': 'geojson',
-        'data': {
-          type: 'FeatureCollection',
-          id: 'stopsboi',
-          features: this.stops
-        }
-      }
-    }
+    ...mapState(['currentFeed'])
+  },
+  watch: {
+    stops () { this.updateSource() }
   },
   methods: {
+    updateSource () {
+      this.map.getSource('stopsSource').setData({
+        type: 'FeatureCollection',
+        features: this.stops
+      })
+    },
     mapboxLoaded: async function (e) {
-      this.$emit('mapLoaded', e)
-      await this.$store.dispatch('getStops')
-      const map = e.map
+      const map = this.map
+      this.$emit('mapLoaded', this.map)
 
-      map.on('click', 'stops', (e) => {
+      map.addSource('stopsSource', {
+        type: 'geojson',
+        data: {
+          type: 'FeatureCollection',
+          features: []
+        },
+        cluster: true,
+        clusterMaxZoom: 12, // Max zoom to cluster points on
+        clusterRadius: 50 // Radius of each cluster when clustering points (defaults to 50)
+      })
+
+      this.updateSource()
+
+      map.addLayer({
+        id: 'clusters',
+        type: 'circle',
+        source: 'stopsSource',
+        filter: ['has', 'point_count'],
+        paint: {
+          // Use step expressions (https://docs.mapbox.com/mapbox-gl-js/style-spec/#expressions-step)
+          // with three steps to implement three types of circles:
+          //   * Blue, 20px circles when point count is less than 100
+          //   * Yellow, 30px circles when point count is between 100 and 750
+          //   * Pink, 40px circles when point count is greater than or equal to 750
+          'circle-color': [
+            'interpolate-hcl',
+            ['linear'],
+            ['get', 'point_count'],
+            4,
+            ['rgba', 248, 97, 90, 0.8],
+            750,
+            ['rgba', 184, 13, 87, 0.8]
+          ],
+          'circle-radius': [
+            'interpolate',
+            ['linear'],
+            ['get', 'point_count'],
+            4,
+            10,
+            300,
+            40
+          ]
+        }
+      })
+
+      map.addLayer({
+        'id': 'stopsLayer',
+        'type': 'circle',
+        'source': 'stopsSource',
+        filter: ['!', ['has', 'point_count']],
+        'paint': {
+          'circle-color': '#11b4da',
+          'circle-radius': 4,
+          'circle-stroke-width': 1,
+          'circle-stroke-color': '#fff'
+        }
+      })
+
+      // inspect a cluster on click
+      map.on('click', 'clusters', function (e) {
+        var features = map.queryRenderedFeatures(e.point, {
+          layers: ['clusters']
+        })
+        var clusterId = features[0].properties.cluster_id
+        map.getSource('stopsSource').getClusterExpansionZoom(
+          clusterId,
+          function (err, zoom) {
+            if (err) return
+
+            map.easeTo({
+              center: features[0].geometry.coordinates,
+              zoom: zoom
+            })
+          }
+        )
+      })
+
+      map.on('click', 'stopsLayer', (e) => {
         this.$emit('stopSelected', e.features[0].properties)
         this.stop = e.features[0].properties
       })
 
-      // Change the cursor to a pointer when the mouse is over the places layer.
-      map.on('mouseenter', 'stops', function () {
+      map.on('mouseenter', 'clusters', function () {
         map.getCanvas().style.cursor = 'pointer'
       })
-
+      map.on('mouseleave', 'clusters', function () {
+        map.getCanvas().style.cursor = ''
+      })
+      // Change the cursor to a pointer when the mouse is over the places layer.
+      map.on('mouseenter', 'stopsLayer', function () {
+        map.getCanvas().style.cursor = 'pointer'
+      })
       // Change it back to a pointer when it leaves.
-      map.on('mouseleave', 'stops', function () {
+      map.on('mouseleave', 'stopsLayer', function () {
         map.getCanvas().style.cursor = ''
       })
 

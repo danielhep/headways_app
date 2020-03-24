@@ -1,7 +1,7 @@
 <template>
   <multipane @paneResize="paneResize" class="vertical-panes">
     <div class="w-2/3">
-      <Map @mapLoaded="mapLoaded" @stopSelected="stopSelected" />
+      <Map @mapLoaded="mapLoaded" @stopSelected="stopSelected" :stops="stops" />
     </div>
     <multipane-resizer class="bg-purple-700" />
 
@@ -15,6 +15,7 @@
 import Map from '@/components/Map.vue'
 import MapSidebar from '@/components/MapSidebar.vue'
 import { Multipane, MultipaneResizer } from 'vue-multipane'
+import { mapState } from 'vuex'
 
 export default {
   components: { Map, MapSidebar, Multipane, MultipaneResizer },
@@ -23,13 +24,17 @@ export default {
       selectedStop: {}
     }
   },
+  computed: {
+    ...mapState(['stops'])
+  },
   methods: {
     paneResize: function () {
       this.map.resize() // or this.$store.map.resize();
     },
     mapLoaded: function (e) {
       // in component
-      this.map = e.map
+      this.map = e
+      this.map.resize()
     },
     stopSelected: async function (stop) {
       this.selectedStop = stop
