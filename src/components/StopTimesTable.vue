@@ -218,6 +218,6 @@ tbody tr {
   height: 1.5rem;
 }
 thead th {
-  @apply sticky top-0;
+  @apply sticky top-0 z-10;
 }
 </style>
