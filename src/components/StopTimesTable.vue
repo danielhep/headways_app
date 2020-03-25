@@ -1,5 +1,11 @@
 <template>
   <div class="w-full flex flex-row">
+    <vue-element-loading
+      background-color="rgba(0, 0, 0, .6)"
+      :active="!stopSchedule.length"
+      color="white"
+      spinner="bar-fade-scale"
+    />
     <table class="w-full self-grow">
       <thead class="main-table-header">
         <tr>
