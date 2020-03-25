@@ -31,6 +31,13 @@
               <p>Headsign</p>
             </div>
           </th>
+          <th class="p-0">
+            <div
+              class="px-4 text-left text-lg bg-purple-900 h-16 border-b border-white flex flex-col justify-center"
+            >
+              <p>T</p>
+            </div>
+          </th>
         </tr>
       </thead>
       <tbody>
@@ -68,31 +75,14 @@
           <td class="px-3 w-full">
             <p>{{time.trip.trip_headsign}}</p>
           </td>
+          <td class="px-3 w-32 relative">
+            <div class="absolute h-full top-0" v-if="i === 0">
+              <svg style="stroke: white; width: 30px" id="i-bar" />
+            </div>
+          </td>
         </tr>
       </tbody>
     </table>
-    <div>
-      <div
-        style="width: 30px"
-        class="absolute bg-purple-900 h-16 flex-col flex justify-center border-b border-white"
-      >
-        <font-awesome-icon
-          v-if="startInd || endInd"
-          @click="clear()"
-          class="m-auto cursor-pointer block p-1"
-          size="2x"
-          icon="times"
-        />
-        <font-awesome-icon
-          v-else
-          @click="selectAll()"
-          class="m-auto cursor-pointer block p-1"
-          size="2x"
-          icon="check-double"
-        />
-      </div>
-      <svg style="stroke: white; width: 30px" id="i-bar" class="h-full" />
-    </div>
   </div>
 </template>
 
@@ -125,32 +115,40 @@ export default {
       this.redraw()
     },
     redraw () {
+      // Set height of SVG to height of table
+      const tableHeight = d3.select('tbody').node()
+        .getBoundingClientRect().height
+      d3.select('#i-bar')
+        .style('height', `${tableHeight}px`)
+
       // filter out blank ones (because endInd is null to start)
-      let data = [this.startInd, this.endInd].filter(d => d !== null)
+      const data = [this.startInd, this.endInd].filter(d => d !== null)
       // get the ref for each indici
-      data = data.map((d) => this.$refs[d][0])
+      const dataRefs = data.map((d) => this.$refs[d][0])
+
+      const headerHeight = d3.select('thead').node().getBoundingClientRect().height
+      // generate horizontal bars
       d3
         .select('#i-bar')
         .selectAll('line.mark')
-        .data(data)
+        .data(dataRefs)
         .join('line')
         .attr('class', 'mark')
         .attr('x1', 5)
-        .attr('y1', (d) => (d.offsetTop + (d.getBoundingClientRect().height / 2)))
+        .attr('y1', (d) => d.offsetTop + (d.getBoundingClientRect().height / 2) - headerHeight)
         .attr('x2', 25)
-        .attr('y2', (d) => d.offsetTop + (d.getBoundingClientRect().height / 2))
-
-      if (data.length === 2) {
+        .attr('y2', (d) => d.offsetTop + (d.getBoundingClientRect().height / 2) - headerHeight)
+      if (dataRefs.length === 2) {
         d3.select('#i-bar')
           .selectAll('line#connector')
-          .data([{ start: data[0], end: data[1] }])
+          .data([{ start: dataRefs[0], end: dataRefs[1] }])
           .join('line')
           .attr('id', 'connector')
           .attr('x1', 15)
-          .attr('y1', (d) => (d.start.offsetTop + (d.start.getBoundingClientRect().height / 2)))
+          .attr('y1', (d) => d.start.offsetTop + (d.start.getBoundingClientRect().height / 2) - headerHeight)
           .attr('x2', 15)
-          .attr('y2', (d) => d.end.offsetTop + (d.end.getBoundingClientRect().height / 2))
-      } else if (data.length <= 1) {
+          .attr('y2', (d) => d.end.offsetTop + (d.end.getBoundingClientRect().height / 2) - headerHeight)
+      } else if (dataRefs.length <= 1) {
         d3.select('#i-bar')
           .selectAll('line#connector')
           .remove()
