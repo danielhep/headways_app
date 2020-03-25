@@ -35,7 +35,24 @@
             <div
               class="px-4 text-left text-lg bg-purple-900 h-16 border-b border-white flex flex-col justify-center"
             >
-              <p>T</p>
+              <p>
+                <font-awesome-icon
+                  v-if="startInd || endInd"
+                  @click="clear()"
+                  class="m-auto cursor-pointer block p-1"
+                  size="2x"
+                  icon="times"
+                  fixed-width
+                />
+                <font-awesome-icon
+                  v-else
+                  @click="selectAll()"
+                  class="m-auto cursor-pointer block p-1"
+                  size="2x"
+                  icon="check-double"
+                  fixed-width
+                />
+              </p>
             </div>
           </th>
         </tr>
@@ -75,8 +92,12 @@
           <td class="px-3 w-full">
             <p>{{time.trip.trip_headsign}}</p>
           </td>
-          <td class="px-3 w-32 relative">
-            <div class="absolute h-full top-0" v-if="i === 0">
+          <td class="px-3 relative">
+            <div
+              class="absolute h-full top-0"
+              v-if="i === 0"
+              style="left: 50%; margin-left: -15px;"
+            >
               <svg style="stroke: white; width: 30px" id="i-bar" />
             </div>
           </td>
