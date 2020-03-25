@@ -1,10 +1,15 @@
 <template>
   <multipane @paneResize="paneResize" class="vertical-panes">
     <div class="w-2/3">
+      <vue-element-loading
+        background-color="rgba(0, 0, 0, .6)"
+        :active="!stops.length"
+        color="white"
+        spinner="bar-fade-scale"
+      />
       <Map @mapLoaded="mapLoaded" @stopSelected="stopSelected" :stops="stops" />
     </div>
     <multipane-resizer class="bg-purple-700" />
-
     <div class="p-3 px-5 w-1/3">
       <map-sidebar :selected-stop="selectedStop" />
     </div>
@@ -26,6 +31,9 @@ export default {
   },
   computed: {
     ...mapState(['stops'])
+  },
+  created () {
+    this.$store.dispatch('getStops')
   },
   methods: {
     paneResize: function () {

@@ -9,6 +9,14 @@ import * as L from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import { mapState } from 'vuex'
 
+const useMousePointer = (map, layer) => {
+  map.on('mouseenter', layer, function () {
+    map.getCanvas().style.cursor = 'pointer'
+  })
+  map.on('mouseleave', layer, function () {
+    map.getCanvas().style.cursor = ''
+  })
+}
 export default {
   props: ['stops'],
   data: function () {
@@ -134,20 +142,8 @@ export default {
         this.stop = e.features[0].properties
       })
 
-      map.on('mouseenter', 'clusters', function () {
-        map.getCanvas().style.cursor = 'pointer'
-      })
-      map.on('mouseleave', 'clusters', function () {
-        map.getCanvas().style.cursor = ''
-      })
-      // Change the cursor to a pointer when the mouse is over the places layer.
-      map.on('mouseenter', 'stopsLayer', function () {
-        map.getCanvas().style.cursor = 'pointer'
-      })
-      // Change it back to a pointer when it leaves.
-      map.on('mouseleave', 'stopsLayer', function () {
-        map.getCanvas().style.cursor = ''
-      })
+      useMousePointer(map, 'clusters')
+      useMousePointer(map, 'stopsLayer')
 
       // just make sure it's sized correctly
       map.resize()
