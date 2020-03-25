@@ -74,7 +74,7 @@
         >
           <td class="px-4">
             <div>
-              <p>{{time.departure_time_readable}}</p>
+              <p>{{time.departure_time.toFormat('hh:mm')}}</p>
             </div>
           </td>
           <td class="px-3 whitespace-no-wrap px-2">

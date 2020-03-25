@@ -132,7 +132,6 @@ export default {
             }
             stop_times(date: $date, routes: $routes) {
               departure_time
-              departure_time_readable
               is_even_hour
               time_since_last_readable
               time_since_last
