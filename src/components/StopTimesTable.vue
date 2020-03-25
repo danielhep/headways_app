@@ -33,7 +33,7 @@
           </th>
           <th class="p-0">
             <div
-              class="px-4 text-left text-lg bg-purple-900 h-16 border-b border-white flex flex-col justify-center"
+              class="text-left text-lg bg-purple-900 h-16 border-b border-white flex flex-col justify-center"
             >
               <p>
                 <font-awesome-icon
@@ -92,7 +92,7 @@
           <td class="px-3 w-full">
             <p>{{time.trip.trip_headsign}}</p>
           </td>
-          <td class="px-3 relative">
+          <td class="relative">
             <div
               class="absolute h-full top-0"
               v-if="i === 0"
