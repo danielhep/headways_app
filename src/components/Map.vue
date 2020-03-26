@@ -18,7 +18,7 @@ const useMousePointer = (map, layer) => {
   })
 }
 export default {
-  props: ['stops'],
+  props: ['stops', 'routeShapes'],
   data: function () {
     return {
       mapboxKey: process.env.VUE_APP_MAPBOX_KEY,
@@ -47,13 +47,27 @@ export default {
     ...mapState(['currentFeed'])
   },
   watch: {
-    stops () { this.updateSource() }
+    stops () { this.updateSource() },
+    routeShapes () { this.updateRouteShapes() }
   },
   methods: {
     updateSource () {
-      this.map.getSource('stopsSource').setData({
+      // only set data if the source exists
+      if (this.map.getSource('stopsSource')) {
+        this.map.getSource('stopsSource').setData({
+          type: 'FeatureCollection',
+          features: this.stops
+        })
+      }
+    },
+    updateRouteShapes () {
+      const features = []
+      for (const shape of this.routeShapes) {
+        features.push({ type: 'Feature', geometry: shape })
+      }
+      this.map.getSource('routeLinesSource').setData({
         type: 'FeatureCollection',
-        features: this.stops
+        features
       })
     },
     mapboxLoaded: async function (e) {
@@ -69,6 +83,14 @@ export default {
         cluster: true,
         clusterMaxZoom: 12, // Max zoom to cluster points on
         clusterRadius: 50 // Radius of each cluster when clustering points (defaults to 50)
+      })
+
+      map.addSource('routeLinesSource', {
+        type: 'geojson',
+        data: {
+          type: 'FeatureCollection',
+          features: []
+        }
       })
 
       this.updateSource()
@@ -115,6 +137,20 @@ export default {
           'circle-radius': 4,
           'circle-stroke-width': 1,
           'circle-stroke-color': '#fff'
+        }
+      })
+
+      map.addLayer({
+        'id': 'routeLines',
+        'type': 'line',
+        'source': 'routeLinesSource',
+        'layout': {
+          'line-join': 'round',
+          'line-cap': 'round'
+        },
+        'paint': {
+          'line-color': '#888',
+          'line-width': 2
         }
       })
 

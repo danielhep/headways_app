@@ -16,7 +16,12 @@
       <h2 class="inline font-display text-3xl">Served by routes:</h2>
     </div>
     <div>
-      <p v-for="route in routes" :key="route.route_id" class="route-chip">{{route}}</p>
+      <p
+        v-for="route in routes"
+        @click="$emit('routeSelected', route)"
+        :key="route"
+        class="route-chip"
+      >{{route}}</p>
     </div>
   </div>
 </template>
@@ -78,6 +83,7 @@ export default {
         }
       },
       skip () {
+        // skip if no selected stop
         return !this.selectedStop.stop_id
       }
     }
