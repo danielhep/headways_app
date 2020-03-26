@@ -15,7 +15,7 @@
     <div>
       <h2 class="inline font-display text-3xl">Served by routes:</h2>
     </div>
-    <div>
+    <div class="w-full">
       <p
         v-for="route in routes"
         @click="$emit('routeSelected', route)"
