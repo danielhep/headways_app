@@ -154,16 +154,14 @@ export default {
           stopInfo: {}
         }
 
-        if (!this.$apollo.queries.stopData.skip) {
-          output.stopSchedule = data.feed.stop.stop_times.map((time) => {
-            // convert the dep time ISO string to an object
-            time.departure_time = Duration.fromISO(time.departure_time)
-            time.time_since_last = Duration.fromISO(time.time_since_last)
-            return time
-          })
+        output.stopSchedule = data.feed.stop.stop_times.map((time) => {
+          // convert the dep time ISO string to an object
+          time.departure_time = Duration.fromISO(time.departure_time)
+          time.time_since_last = Duration.fromISO(time.time_since_last)
+          return time
+        })
 
-          output.stopInfo = data.feed.stop
-        }
+        output.stopInfo = data.feed.stop
 
         return output
       },
