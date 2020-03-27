@@ -23,7 +23,7 @@ export default {
   data: function () {
     return {
       mapboxKey: process.env.VUE_APP_MAPBOX_KEY,
-      mapStyle: 'mapbox://styles/danielhep/cjz0jqvvh5r7u1cpn9ssas68c',
+      mapStyle: 'mapbox://styles/danielhep/ck89oivim0a871ip0ksmxs64y',
       zoom: 13,
       stop: {}
     }
@@ -146,7 +146,7 @@ export default {
         'source': 'stopsSource',
         filter: ['!', ['has', 'point_count']],
         'paint': {
-          'circle-color': '#11b4da',
+          'circle-color': '#9852f9',
           'circle-radius': 4,
           'circle-stroke-width': 1,
           'circle-stroke-color': '#fff'
@@ -162,7 +162,7 @@ export default {
           'line-cap': 'round'
         },
         'paint': {
-          'line-color': '#11b4da',
+          'line-color': '#ffd739',
           'line-width': 2
         }
       })
