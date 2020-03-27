@@ -8,6 +8,7 @@ import * as L from 'mapbox-gl'
 // import { MarkerClusterGroup } from 'leaflet.markercluster'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import { mapState } from 'vuex'
+import _ from 'lodash/fp'
 
 const useMousePointer = (map, layer) => {
   map.on('mouseenter', layer, function () {
@@ -62,12 +63,24 @@ export default {
     },
     updateRouteShapes () {
       const features = []
-      for (const shape of this.routeShapes) {
+      for (let shape of this.routeShapes) {
         features.push({ type: 'Feature', geometry: shape })
       }
       this.map.getSource('routeLinesSource').setData({
         type: 'FeatureCollection',
         features
+      })
+
+      this.zoomToSelectedRoute()
+    },
+    zoomToSelectedRoute () {
+      const coordinates = _.flatMap(s => { return s.coordinates })(this.routeShapes)
+      let bounds = coordinates.reduce(function (bounds, coord) {
+        return bounds.extend(coord)
+      }, new L.LngLatBounds(coordinates[0], coordinates[0]))
+
+      this.map.fitBounds(bounds, {
+        padding: 20
       })
     },
     mapboxLoaded: async function (e) {
@@ -149,7 +162,7 @@ export default {
           'line-cap': 'round'
         },
         'paint': {
-          'line-color': '#888',
+          'line-color': '#11b4da',
           'line-width': 2
         }
       })
