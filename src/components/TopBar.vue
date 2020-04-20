@@ -1,6 +1,8 @@
 <template>
-  <nav class="flex items-center justify-between flex-wrap bg-black p-3">
-    <div class="flex items-center flex-shrink-0 text-white mr-6">
+  <nav
+    class="flex items-center justify-between flex-wrap bg-gray-dark p-3 border-b-2 border-accent-1"
+  >
+    <div class="flex items-center flex-shrink-0 mr-6">
       <svg
         class="fill-current h-8 w-8 mr-2"
         width="54"
@@ -14,7 +16,7 @@
       </svg>
       <span class="font-semibold italic text-3xl tracking-tight">Headways</span>
     </div>
-    <div v-if="currentFeed" class="text-white p-4 text-white font-bold">
+    <div v-if="currentFeed" class="p-4 text-white font-bold">
       <font-awesome-icon v-on:click="clearFeed" class="mx-3 cursor-pointer" size="lg" icon="times" />
       {{currentFeed.feed_publisher_name}}
       <small

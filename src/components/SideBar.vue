@@ -1,6 +1,6 @@
 <template>
   <div
-    class="bg-gray-800 border-solid border-purple-700 border-r-4 min-h-full"
+    class="bg-gray-dark border-solid border-accent-1 border-r-2 min-h-full"
     v-bind:class="{'w-1/3': selectFeedMode, 'w-48': !selectFeedMode}"
     style="transition: width .5s ease"
   >
@@ -27,9 +27,9 @@
     <ul v-else class="list-reset">
       <li v-for="view in views" v-bind:key="view.id">
         <router-link
-          active-class="border-purple-700"
+          active-class="border-accent-1"
           :to="{name: view.name, params: {feed: currentFeed.feed_index}}"
-          class="block p-4 text-white font-bold border-gray-800 hover:border-purple-700 hover:bg-gray-900 border-r-8 outline-none"
+          class="block p-4 text-white font-bold border-transparent hover:border-accent-1 hover:bg-gray-900 border-r-8 outline-none"
         >
           <font-awesome-icon class="mx-2" :icon="view.icon" />
           {{view.name}}

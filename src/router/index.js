@@ -16,7 +16,7 @@ const routes = [
     path: '/:feed/dash',
     name: 'Dashboard',
     showInSidebar: true,
-    icon: 'plane',
+    icon: 'columns',
     component: () => import('../views/Dashboard.vue')
   },
   {

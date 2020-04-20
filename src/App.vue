@@ -1,10 +1,10 @@
 <template>
   <div class="min-h-screen flex flex-col">
     <top-bar />
-    <div class="flex-grow flex flex-row bg-gray-900 text-white">
+    <div class="flex-grow flex flex-row bg-gray-lighter text-white">
       <side-bar class="flex-shrink-0" />
       <div class="flex-grow">
-        <router-view class="border-purple-700 border-t-4 min-h-full" />
+        <router-view class="min-h-full" />
       </div>
     </div>
   </div>
@@ -20,5 +20,4 @@ export default {
 </script>
 
 <style>
-@import url("https://fonts.googleapis.com/css?family=PT+Sans&display=swap");
 </style>
