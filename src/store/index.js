@@ -39,7 +39,6 @@ export default new Vuex.Store({
   },
   actions: {
     async getRoutes (context) {
-      console.log(context.state.routes)
       if (!context.state.routes.length) {
         const { data } = await apolloClient.query({
           query: gql`
@@ -70,7 +69,6 @@ export default new Vuex.Store({
       }
     },
     async getInfoOnStop (context, stopID) {
-      console.log(stopID)
       const { data } = await apolloClient.query({
         query: gql`
           query stopInfo {
@@ -88,7 +86,6 @@ export default new Vuex.Store({
           }
         `
       })
-      console.log(data)
       return data
     },
     async getFeeds (context) {
