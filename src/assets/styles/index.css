@@ -12,7 +12,7 @@ html {
 }
 
 .small-button:hover {
-    @apply border-purple-700
+    @apply border-accent-1
 }
 
 .route-chip {

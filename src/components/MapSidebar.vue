@@ -1,11 +1,9 @@
 <template>
   <div class="w-full flex flex-col">
-    <div class="pb-2">
-      <h2 class="inline font-display text-3xl">Stop Info</h2>
-      <small class="text-small text-gray-400 px-2">ID:{{selectedStop.stop_id}}</small>
-      <small class="text-small text-gray-400 px-2">Stop Name: {{selectedStop.stop_name}}</small>
-    </div>
-    <div class="border-b-2 border-white pb-4 w-full">
+    <h2 class="text-lg w-full border-b py-1 mb-1">Stop Info</h2>
+    <small class="px-2">ID:{{selectedStop.stop_id}}</small>
+    <small class="px-2">Stop Name: {{selectedStop.stop_name}}</small>
+    <div class="py-4 w-full">
       <small class="small-button" @click="openGoogleMaps(selectedStop)">Google Maps</small>
       <router-link
         class="small-button"
@@ -13,7 +11,7 @@
       >Stop Schedule</router-link>
     </div>
     <div>
-      <h2 class="inline font-display text-3xl">Served by routes:</h2>
+      <h2 class="text-lg border-b py-1 mb-1">Routes:</h2>
     </div>
     <div class="w-full">
       <p

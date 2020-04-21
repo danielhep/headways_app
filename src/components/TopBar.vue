@@ -1,8 +1,8 @@
 <template>
   <nav
-    class="flex items-center justify-between flex-wrap bg-gray-dark p-3 border-b-2 border-accent-1"
+    class="flex items-center justify-between flex-wrap bg-gray-dark border-b-2 border-accent-1 h-16"
   >
-    <div class="flex items-center flex-shrink-0 mr-6">
+    <div class="flex items-center flex-shrink-0 mr-6 m-3">
       <svg
         class="fill-current h-8 w-8 mr-2"
         width="54"
@@ -15,6 +15,20 @@
         />
       </svg>
       <span class="font-semibold italic text-3xl tracking-tight">Headways</span>
+    </div>
+    <div class="flex-grow flex h-full">
+      <router-link
+        :to="{name: view.name, params: {feed: currentFeed.feed_index}}"
+        v-for="view in views"
+        v-bind:key="view.id"
+        class="nav-button"
+        active-class="active"
+      >
+        <div>
+          <font-awesome-icon class="mx-2" :icon="view.icon" />
+          {{view.name}}
+        </div>
+      </router-link>
     </div>
     <div v-if="currentFeed" class="p-4 text-white font-bold">
       <font-awesome-icon v-on:click="clearFeed" class="mx-3 cursor-pointer" size="lg" icon="times" />
@@ -35,8 +49,19 @@
     </div>
   </nav>
 </template>
+<style scoped>
+.nav-button {
+  @apply px-3 border-b-2 cursor-pointer border-transparent flex flex-col justify-center font-bold;
+}
+
+.nav-button:hover,
+.nav-button.active {
+  @apply border-accent-1;
+}
+</style>
 <script>
 import { mapState } from 'vuex'
+import { routes } from '@/router'
 
 export default {
   data: function () {
@@ -44,7 +69,14 @@ export default {
 
     }
   },
-  computed: mapState(['currentFeed']),
+  computed: {
+    ...mapState(['currentFeed']),
+    views: () => {
+      return routes.filter((e) => {
+        return e.showInSidebar
+      })
+    }
+  },
   methods: {
     clearFeed: function () {
       this.$store.commit('clearFeed')

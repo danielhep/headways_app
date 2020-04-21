@@ -1,40 +1,49 @@
 <template>
-  <multipane @paneResize="paneResize" class="vertical-panes">
-    <div class="w-2/3">
-      <vue-element-loading
-        background-color="rgba(0, 0, 0, .6)"
-        :active="!stops.length"
-        color="white"
-        spinner="bar-fade-scale"
-      />
-      <Map
-        @mapLoaded="mapLoaded"
-        @stopSelected="stopSelected"
-        :routeShapes="shapes"
-        :stops="stops"
-      />
+  <div class="w-full h-full relative">
+    <vue-element-loading
+      background-color="rgba(0, 0, 0, .6)"
+      :active="!stops.length"
+      color="white"
+      spinner="bar-fade-scale"
+    />
+    <Map @mapLoaded="mapLoaded" @stopSelected="stopSelected" :routeShapes="shapes" :stops="stops" />
+    <div class="z-10 absolute bg-gray-light border border-accent-1 shadow m-4 top-0 right-0">
+      <div class="bg-accent-1 w-full p-2 flex">
+        <div class="pr-4 flex-grow font-bold">Properties</div>
+        <font-awesome-icon
+          border
+          fixed-width
+          class="cursor-pointer"
+          :icon="showProperties ? 'window-minimize' : 'window-maximize'"
+          @click="showProperties = !showProperties"
+        />
+      </div>
+      <transition name="slide">
+        <map-sidebar
+          v-if="showProperties"
+          @routeSelected="(route) => selectedRoute=route"
+          :selected-stop="selectedStop"
+          class="p-2"
+        />
+      </transition>
     </div>
-    <multipane-resizer class="bg-purple-700" />
-    <div class="p-3 px-5 w-1/3">
-      <map-sidebar @routeSelected="(route) => selectedRoute=route" :selected-stop="selectedStop" />
-    </div>
-  </multipane>
+  </div>
 </template>
 
 <script>
 import Map from '@/components/Map.vue'
 import MapSidebar from '@/components/MapSidebar.vue'
-import { Multipane, MultipaneResizer } from 'vue-multipane'
 import { mapState } from 'vuex'
 import gql from 'graphql-tag'
 import _ from 'lodash/fp'
 
 export default {
-  components: { Map, MapSidebar, Multipane, MultipaneResizer },
+  components: { Map, MapSidebar },
   data: function () {
     return {
       selectedStop: {},
-      selectedRoute: ''
+      selectedRoute: '',
+      showProperties: false
     }
   },
   computed: {
@@ -91,34 +100,12 @@ export default {
 </script>
 
 <style scoped>
-.vertical-panes {
-  width: 100%;
-  height: 100%;
-}
-
-.multipane-resizer {
-  width: 10px;
-}
-
-.multipane-resizer::before {
-  content: "";
-  margin-left: -2px;
-  height: 40px;
-  width: 4px;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  border-radius: 2px;
-  background-color: white;
-}
-
-.vertical-panes > .pane {
-  text-align: left;
-  padding: 15px;
+.slide-enter-active {
+  transition: all 0.3s;
   overflow: hidden;
-  background: #eee;
 }
-.vertical-panes > .pane ~ .pane {
-  border-left: 3px solid #ccc;
+
+.slide-enter {
+  transform: scaleY(0) scaleX(0);
 }
 </style>
