@@ -6,6 +6,7 @@
       color="white"
       spinner="bar-fade-scale"
     />
+    <div class="bg-white z-20 fixed top-0 text-red-900" @click="runTest">Run Test</div>
     <Map @mapLoaded="mapLoaded" @stopSelected="stopSelected" :routeShapes="shapes" :stops="stops" />
     <div class="z-10 absolute bg-gray-light border border-accent-1 shadow m-4 top-0 right-0">
       <div class="bg-accent-1 w-full p-2 flex">
@@ -18,27 +19,25 @@
           @click="showProperties = !showProperties"
         />
       </div>
-      <transition name="slide">
-        <map-sidebar
-          v-if="showProperties"
-          @routeSelected="(route) => selectedRoute=route"
-          :selected-stop="selectedStop"
-          class="p-2"
-        />
-      </transition>
+      <map-properties-panel
+        v-if="showProperties"
+        @routeSelected="(route) => selectedRoute=route"
+        :selected-stop="selectedStop"
+        class="p-2"
+      />
     </div>
   </div>
 </template>
 
 <script>
 import Map from '@/components/Map.vue'
-import MapSidebar from '@/components/MapSidebar.vue'
+import MapPropertiesPanel from '@/components/MapPropertiesPanel.vue'
 import { mapState } from 'vuex'
 import gql from 'graphql-tag'
 import _ from 'lodash/fp'
 
 export default {
-  components: { Map, MapSidebar },
+  components: { Map, MapPropertiesPanel },
   data: function () {
     return {
       selectedStop: {},
