@@ -35,7 +35,7 @@ import MapPropertiesPanel from '@/components/MapPropertiesPanel.vue'
 import { mapState } from 'vuex'
 import gql from 'graphql-tag'
 import _ from 'lodash/fp'
-
+import { getFrequentStops } from '@/store/frequentCorridorAlg'
 export default {
   components: { Map, MapPropertiesPanel },
   data: function () {
@@ -63,9 +63,19 @@ export default {
     },
     stopSelected: async function (stop) {
       this.selectedStop = stop
+    },
+    runTest () {
+      getFrequentStops()
     }
   },
   apollo: {
+    stopTimes: {
+      query: gql`query stopTimes() {
+        feed(feed_index: $feedIndex) {
+
+        }
+      }`
+    },
     shapes: {
       query: gql`query route($feedIndex: Int, $routeShortNames: [String!]) {
         feed(feed_index: $feedIndex) {
