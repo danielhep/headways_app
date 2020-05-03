@@ -4,7 +4,6 @@ import router from './router'
 import store from './store'
 
 import './assets/styles/index.css'
-import 'normalize.css'
 import 'vue-slider-component/theme/default.css'
 
 import { library } from '@fortawesome/fontawesome-svg-core'

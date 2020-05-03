@@ -4,6 +4,7 @@
 @import url('https://fonts.googleapis.com/css?family=Open+Sans&display=swap');
 
 html {
+    line-height: 1;
     @apply font-display text-textclr;
 }
 
@@ -16,7 +17,7 @@ html {
 }
 
 .route-chip {
-    @apply bg-gray-200 cursor-pointer text-black px-1 rounded-lg mx-1 border-2 text-xs inline-block mt-1
+    @apply bg-gray-200 cursor-pointer text-black px-1 rounded-lg mx-1 border-2 text-xs inline-block mt-1;
 }
 
 .small-input {
