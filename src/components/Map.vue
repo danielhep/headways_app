@@ -210,6 +210,15 @@ export default {
         this.stop = e.features[0].properties
       })
 
+      map.addControl(
+        new L.GeolocateControl({
+          positionOptions: {
+            enableHighAccuracy: true
+          },
+          trackUserLocation: true
+        })
+      )
+
       useMousePointer(map, 'clusters')
       useMousePointer(map, 'stopsLayer')
 

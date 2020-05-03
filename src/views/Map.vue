@@ -14,7 +14,7 @@
       @mapLoaded="mapLoaded"
       @stopSelected="stopSelected"
     />
-    <div class="z-10 absolute bg-gray-light border border-accent-1 shadow m-4 top-0 right-0 rounded">
+    <div class="z-10 absolute bg-gray-light border border-accent-1 shadow m-4 top-0 left-0 rounded">
       <div class="bg-accent-1 w-full p-2 flex">
         <div class="pr-4 flex-grow font-bold flex items-center">
           Properties
