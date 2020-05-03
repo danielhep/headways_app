@@ -1,31 +1,33 @@
 <template>
   <div>
-    <div class="flex flex-row p-5">
-      <info-card
-        class="flex-grow mx-3"
-        title="Number of Routes"
-        icon="route"
-        :loading="loading"
-      >{{routes.length}}</info-card>
-      <info-card
-        class="flex-grow mx-3"
-        title="Number of Stops"
-        icon="map-marker"
-        :loading="loading"
-      >{{stops.length}}</info-card>
-      <info-card
-        class="flex-grow mx-3"
-        title="Service Hours Per Day"
-        icon="clock"
-        :loading="loading"
-      >n/a</info-card>
+    <div class="flex flex-row">
+      <div
+        v-if="!$apollo.loading"
+        class="flex flex-col border-r border-accent-1"
+      >
+        <div class="border-b-2 border-gray-lighter text-xl p-2">
+          Routes
+        </div>
+        <div
+          v-for="route in feed.routes"
+          :key="route.route_short_name"
+          class="flex justify-start content-center cursor-pointer hover:text-accent-1 hover:bg-gray-lighter px-2 py-2"
+        >
+          <span class="bg-gray-400 h-2 w-2 m-2 rounded-full" />
+          <div class="flex-grow font-medium px-2 flex items-center">
+            {{ route.route_short_name }}
+          </div>
+          <div class="text-sm font-normal text-gray-300 tracking-wide flex items-center">
+            {{ route.route_long_name ? route.route_long_name : route.route_desc }}
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import InfoCard from '@/components/InfoCard.vue'
-import { mapState } from 'vuex'
+import gql from 'graphql-tag'
 
 export default {
   data: function () {
@@ -33,13 +35,25 @@ export default {
       loading: false
     }
   },
-  components: { InfoCard },
-  computed: mapState(['routes', 'stops']),
-  created: async function () {
-    this.loading = true
-    await this.$store.dispatch('getRoutes')
-    await this.$store.dispatch('getStops')
-    this.loading = false
+  apollo: {
+    feed: {
+      query: gql`
+        query($feedIndex: Int!) {
+          feed(feed_index: $feedIndex) {
+            routes {
+              route_long_name
+              route_short_name
+              route_desc
+            }
+          }
+        }
+      `,
+      variables () {
+        return {
+          feedIndex: parseInt(this.$route.params.feed)
+        }
+      }
+    }
   }
 }
 </script>

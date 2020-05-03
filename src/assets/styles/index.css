@@ -1,12 +1,18 @@
 @tailwind base;
 @tailwind components;
 
+@import url('https://fonts.googleapis.com/css?family=Open+Sans&display=swap');
+
+html {
+    @apply font-display text-textclr;
+}
+
 .small-button {
     @apply cursor-pointer p-1 rounded mx-2 border border-gray-500 text-sm;
 }
 
 .small-button:hover {
-    @apply border-purple-700
+    @apply border-accent-1
 }
 
 .route-chip {

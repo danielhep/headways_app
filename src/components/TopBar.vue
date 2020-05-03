@@ -1,6 +1,8 @@
 <template>
-  <nav class="flex items-center justify-between flex-wrap bg-black p-3">
-    <div class="flex items-center flex-shrink-0 text-white mr-6">
+  <nav
+    class="flex items-center justify-between flex-wrap bg-gray-dark border-b-2 border-accent-1 h-16"
+  >
+    <div class="flex items-center flex-shrink-0 mr-6 m-3">
       <svg
         class="fill-current h-8 w-8 mr-2"
         width="54"
@@ -14,18 +16,61 @@
       </svg>
       <span class="font-semibold italic text-3xl tracking-tight">Headways</span>
     </div>
-    <div v-if="currentFeed" class="text-white p-4 text-white font-bold">
-      <font-awesome-icon v-on:click="clearFeed" class="mx-3 cursor-pointer" size="lg" icon="times" />
-      {{currentFeed.feed_publisher_name}}
+    <div
+      v-if="$route.params.feed"
+      class="flex-grow flex h-full"
+    >
+      <router-link
+        :to="{name: 'Dashboard' }"
+        class="nav-button"
+        active-class="active"
+      >
+        <div>
+          <font-awesome-icon
+            class="mx-2"
+            icon="columns"
+          />
+          Dashboard
+        </div>
+      </router-link>
+      <router-link
+        :to="{name: 'Map' }"
+        class="nav-button"
+        active-class="active"
+      >
+        <div>
+          <font-awesome-icon
+            class="mx-2"
+            icon="map"
+          />
+          Map
+        </div>
+      </router-link>
+    </div>
+    <router-link
+      v-if="feed && $route.params.feed"
+      class="p-4 text-white font-bold"
+      :to="{name: 'Select Feed'}"
+    >
+      <font-awesome-icon
+        class="mx-3 cursor-pointer"
+        size="lg"
+        icon="times"
+      />
+      {{ feed.feed_publisher_name }}
       <small
         class="font-normal px-2 text-gray-400"
-      >{{currentFeed.feed_location_friendly}}</small>
-    </div>
+      >{{ feed.feed_location_friendly }}</small>
+    </router-link>
     <div class="block lg:hidden">
       <button
         class="flex items-center px-3 py-2 border rounded text-teal-200 border-teal-400 hover:text-white hover:border-white"
       >
-        <svg class="fill-current h-3 w-3" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+        <svg
+          class="fill-current h-3 w-3"
+          viewBox="0 0 20 20"
+          xmlns="http://www.w3.org/2000/svg"
+        >
           <title>Menu</title>
           <path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z" />
         </svg>
@@ -33,8 +78,18 @@
     </div>
   </nav>
 </template>
+<style scoped>
+.nav-button {
+  @apply px-3 border-b-2 cursor-pointer border-transparent flex flex-col justify-center font-bold;
+}
+
+.nav-button:hover,
+.nav-button.active {
+  @apply border-accent-1;
+}
+</style>
 <script>
-import { mapState } from 'vuex'
+import gql from 'graphql-tag'
 
 export default {
   data: function () {
@@ -42,10 +97,26 @@ export default {
 
     }
   },
-  computed: mapState(['currentFeed']),
+  computed: {
+  },
   methods: {
-    clearFeed: function () {
-      this.$store.commit('clearFeed')
+  },
+  apollo: {
+    feed: {
+      query: gql`
+        query feed($feedIndex: Int!) {
+          feed(feed_index: $feedIndex) {
+            feed_publisher_name
+            feed_location_friendly
+          }
+        }
+      `,
+      variables () {
+        return {
+          feedIndex: parseInt(this.$route.params.feed)
+        }
+      },
+      skip () { return !this.$route.params.feed }
     }
   }
 }
