@@ -1,37 +1,38 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
-import store from '../store'
+import SelectFeed from '../views/SelectFeed.vue'
 
 Vue.use(VueRouter)
 
 const routes = [
   {
     path: '/',
-    name: 'Home',
-    showInSidebar: false,
-    component: Home
+    name: 'Select Feed',
+    component: SelectFeed
   },
   {
-    path: '/:feed/dash',
-    name: 'Dashboard',
-    showInSidebar: true,
-    icon: 'columns',
-    component: () => import('../views/Dashboard.vue')
-  },
-  {
-    path: '/:feed/map',
-    name: 'Map',
-    showInSidebar: true,
-    icon: 'map',
-    component: () => import('../views/Map.vue')
-  },
-  {
-    path: '/:feed/stop',
-    name: 'Stop Schedule',
-    showInSidebar: true,
-    icon: 'map-marker-alt',
-    component: () => import('../views/StopExplorer.vue')
+    path: '/feed/:feed',
+    component: () => import('../views/ViewFeed.vue'),
+    children: [
+      {
+        path: 'dash',
+        name: 'Dashboard',
+        icon: 'columns',
+        component: () => import('../views/Dashboard.vue')
+      },
+      {
+        path: 'map',
+        name: 'Map',
+        icon: 'map',
+        component: () => import('../views/Map.vue')
+      },
+      {
+        path: 'stop',
+        name: 'Stop Schedule',
+        icon: 'map-marker-alt',
+        component: () => import('../views/StopExplorer.vue')
+      }
+    ]
   }
 ]
 
@@ -42,11 +43,10 @@ const router = new VueRouter({
 })
 
 router.beforeEach(async (to, from, next) => {
-  if (!store.state.currentFeed && to.params.feed) {
-    await store.dispatch('getFeeds')
-    const currentFeed = store.state.feeds.find(feed => parseInt(to.params.feed) === feed.feed_index)
-    store.commit('setFeed', currentFeed)
-  }
+  // if (!store.state.currentFeed && to.params.feed) {
+  //   const currentFeed = store.state.feeds.find(feed => parseInt(to.params.feed) === feed.feed_index)
+  //   store.commit('setFeed', currentFeed)
+  // }
   next()
 })
 

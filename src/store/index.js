@@ -8,7 +8,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    feeds: [ ],
+    feeds: [],
     views: [
       { name: 'High Altitude', icon: 'plane', path: 'dash', id: 0 },
       { name: 'Map', icon: 'map', path: 'map', id: 1 }
@@ -101,7 +101,8 @@ export default new Vuex.Store({
               feed_location_friendly
             }
           }
-        ` })
+        `
+        })
         context.commit('setFeeds', data.feeds)
       }
     }

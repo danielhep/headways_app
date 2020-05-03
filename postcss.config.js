@@ -2,7 +2,7 @@
 const autoprefixer = require('autoprefixer')
 const tailwindcss = require('tailwindcss')
 
-const postcssPurgecss = require(`@fullhuman/postcss-purgecss`)
+const postcssPurgecss = require('@fullhuman/postcss-purgecss')
 
 const purgecss = postcssPurgecss({
   // Specify the paths to all of the template files in your project.

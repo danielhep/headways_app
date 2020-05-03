@@ -14,7 +14,7 @@ module.exports = {
         'gray-light': '#4B5354',
         'accent-1': '#ff715b',
         'accent-2': '#700353',
-        'textclr': '#dadada'
+        textclr: '#dadada'
       }
     }
   },

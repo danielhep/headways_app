@@ -11,10 +11,13 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import { faMapMarkerAlt, faRoute, faClock, faMapMarker, faMap, faTimes, faCaretLeft, faCheckSquare, faCheckDouble, faColumns, faWindowMaximize, faWindowMinimize } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { gqlProvider } from './vue-apollo'
+import { sync } from 'vuex-router-sync'
 import VueElementLoading from 'vue-element-loading'
 import VueSlider from 'vue-slider-component'
 import VueInputAutowidth from 'vue-input-autowidth'
 import VCalendar from 'v-calendar'
+
+sync(store, router)
 
 Vue.use(VCalendar)
 Vue.component('VueSlider', VueSlider)

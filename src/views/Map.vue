@@ -2,15 +2,23 @@
   <div class="w-full h-full relative">
     <vue-element-loading
       background-color="rgba(0, 0, 0, .6)"
-      :active="!stops.length"
+      :active="$apollo.loading"
       color="white"
       spinner="bar-fade-scale"
     />
-    <div class="bg-white z-20 fixed top-0 text-red-900" @click="runTest">Run Test</div>
-    <Map @mapLoaded="mapLoaded" @stopSelected="stopSelected" :routeShapes="shapes" :stops="stops" />
-    <div class="z-10 absolute bg-gray-light border border-accent-1 shadow m-4 top-0 right-0">
+    <Map
+      v-if="!$apollo.queries.feed.loading"
+      :route-shapes="shape"
+      :stops="feed.stops_json"
+      :center="[feed.feed_lon, feed.feed_lat]"
+      @mapLoaded="mapLoaded"
+      @stopSelected="stopSelected"
+    />
+    <div class="z-10 absolute bg-gray-light border border-accent-1 shadow m-4 top-0 right-0 rounded">
       <div class="bg-accent-1 w-full p-2 flex">
-        <div class="pr-4 flex-grow font-bold">Properties</div>
+        <div class="pr-4 flex-grow font-bold flex items-center">
+          Properties
+        </div>
         <font-awesome-icon
           border
           fixed-width
@@ -21,9 +29,9 @@
       </div>
       <map-properties-panel
         v-if="showProperties"
-        @routeSelected="(route) => selectedRoute=route"
         :selected-stop="selectedStop"
         class="p-2"
+        @routeSelected="(route) => selectedRoute=route"
       />
     </div>
   </div>
@@ -32,25 +40,21 @@
 <script>
 import Map from '@/components/Map.vue'
 import MapPropertiesPanel from '@/components/MapPropertiesPanel.vue'
-import { mapState } from 'vuex'
 import gql from 'graphql-tag'
-import _ from 'lodash/fp'
 
 export default {
   components: { Map, MapPropertiesPanel },
   data: function () {
     return {
       selectedStop: {},
-      selectedRoute: '',
+      selectedRoute: {},
       showProperties: false
     }
   },
   computed: {
-    ...mapState(['stops']),
     feedIndex () { return parseInt(this.$route.params.feed) }
   },
   created () {
-    this.$store.dispatch('getStops')
   },
   methods: {
     paneResize: function () {
@@ -66,32 +70,35 @@ export default {
     }
   },
   apollo: {
-    shapes: {
-      query: gql`query route($feedIndex: Int, $routeShortNames: [String!]) {
-        feed(feed_index: $feedIndex) {
-          routes_by_short_name(route_short_names: $routeShortNames) {
+    shape: {
+      query: gql`
+        query shape($routeIDs: [ID]) {
+          routes_by_id(route_ids: $routeIDs) {
             shapes
           }
-        }
-      }
-      `,
-      update (data) {
-        const out = _.flow([
-          _.path('feed.routes_by_short_name'),
-          _.flatMap(_.path('shapes'))
-        ])(data)
-
-        return out
-      },
+        }`,
+      update (data) { console.log(data); return data.routes_by_id[0].shapes },
       variables () {
         return {
           feedIndex: this.feedIndex,
-          routeShortNames: this.selectedRoute
+          routeIDs: [this.selectedRoute._id]
         }
       },
-      skip () {
-        console.log(this.selectedRoute === '')
-        return this.selectedRoute === ''
+      skip () { return !this.selectedRoute._id }
+    },
+    feed: {
+      query: gql`query feed($feedIndex: Int) {
+        feed(feed_index: $feedIndex) {
+          feed_lat
+          feed_lon
+          stops_json
+        }
+      }
+      `,
+      variables () {
+        return {
+          feedIndex: this.feedIndex
+        }
       }
     }
   }

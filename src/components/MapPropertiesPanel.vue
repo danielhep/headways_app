@@ -1,32 +1,45 @@
 <template>
-  <div class="w-full flex flex-col">
-    <h2 class="text-lg w-full border-b py-1 mb-1">Stop Info</h2>
-    <small class="px-2">ID:{{selectedStop.stop_id}}</small>
-    <small class="px-2">Stop Name: {{selectedStop.stop_name}}</small>
+  <div
+    v-if="feed"
+    class="w-full flex flex-col"
+  >
+    <h2 class="text-lg w-full border-b py-1 mb-1">
+      Stop Info
+    </h2>
+    <small class="px-2">ID:{{ selectedStop.stop_id }}</small>
+    <small class="px-2">Stop Name: {{ selectedStop.stop_name }}</small>
     <div class="py-4 w-full">
-      <small class="small-button" @click="openGoogleMaps(selectedStop)">Google Maps</small>
+      <small
+        class="small-button"
+        @click="openGoogleMaps(selectedStop)"
+      >Google Maps</small>
       <router-link
         class="small-button"
-        :to="{name: 'Stop Schedule', params: {feed: this.currentFeed.feed_index}, query: {stop: selectedStop.stop_id}}"
-      >Stop Schedule</router-link>
+        :to="{name: 'Stop Schedule', params: {feed: feed.feed_index}, query: {stop: selectedStop.stop_id}}"
+      >
+        Stop Schedule
+      </router-link>
     </div>
     <div>
-      <h2 class="text-lg border-b py-1 mb-1">Routes:</h2>
+      <h2 class="text-lg border-b py-1 mb-1">
+        Routes:
+      </h2>
     </div>
     <div class="w-full">
       <p
-        v-for="route in routes"
-        @click="$emit('routeSelected', route)"
-        :key="route"
+        v-for="route in feed.stop.routes"
+        :key="route._id"
         class="route-chip"
-      >{{route}}</p>
+        @click="$emit('routeSelected', route)"
+      >
+        {{ route.route_short_name }}
+      </p>
     </div>
   </div>
 </template>
 
 <script>
 import gql from 'graphql-tag'
-import { mapState } from 'vuex'
 
 export default {
   props: ['selectedStop'],
@@ -40,14 +53,7 @@ export default {
       }
     }
   },
-  methods: {
-    openGoogleMaps: function (stop) {
-      const url = `https://www.google.com/maps/search/?api=1&query=${stop.stop_lat},${stop.stop_lon}`
-      window.open(url)
-    }
-  },
   computed: {
-    ...mapState(['currentFeed']),
     stopTimes () {
       return this.stopInfo.stop.stop_times
     },
@@ -61,22 +67,28 @@ export default {
       }
     }
   },
+  methods: {
+    openGoogleMaps: function (stop) {
+      const url = `https://www.google.com/maps/search/?api=1&query=${stop.stop_lat},${stop.stop_lon}`
+      window.open(url)
+    }
+  },
   apollo: {
-    stopInfo: {
+    feed: {
       query: gql`query stopInfo($stopID: ID!, $feedIndex: Int) {
         feed(feed_index: $feedIndex) {
           stop(stop_id: $stopID) {
             routes {
               route_short_name
               route_id
+              _id
             }
           }
         }
       }`,
-      update: data => data.feed,
       variables () {
         return {
-          feedIndex: this.currentFeed.feed_index,
+          feedIndex: parseInt(this.$route.params.feed),
           stopID: this.selectedStop.stop_id.toString()
         }
       },

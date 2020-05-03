@@ -16,32 +16,61 @@
       </svg>
       <span class="font-semibold italic text-3xl tracking-tight">Headways</span>
     </div>
-    <div class="flex-grow flex h-full">
+    <div
+      v-if="$route.params.feed"
+      class="flex-grow flex h-full"
+    >
       <router-link
-        :to="{name: view.name, params: {feed: currentFeed.feed_index}}"
-        v-for="view in views"
-        v-bind:key="view.id"
+        :to="{name: 'Dashboard' }"
         class="nav-button"
         active-class="active"
       >
         <div>
-          <font-awesome-icon class="mx-2" :icon="view.icon" />
-          {{view.name}}
+          <font-awesome-icon
+            class="mx-2"
+            icon="columns"
+          />
+          Dashboard
+        </div>
+      </router-link>
+      <router-link
+        :to="{name: 'Map' }"
+        class="nav-button"
+        active-class="active"
+      >
+        <div>
+          <font-awesome-icon
+            class="mx-2"
+            icon="map"
+          />
+          Map
         </div>
       </router-link>
     </div>
-    <div v-if="currentFeed" class="p-4 text-white font-bold">
-      <font-awesome-icon v-on:click="clearFeed" class="mx-3 cursor-pointer" size="lg" icon="times" />
-      {{currentFeed.feed_publisher_name}}
+    <router-link
+      v-if="feed && $route.params.feed"
+      class="p-4 text-white font-bold"
+      :to="{name: 'Select Feed'}"
+    >
+      <font-awesome-icon
+        class="mx-3 cursor-pointer"
+        size="lg"
+        icon="times"
+      />
+      {{ feed.feed_publisher_name }}
       <small
         class="font-normal px-2 text-gray-400"
-      >{{currentFeed.feed_location_friendly}}</small>
-    </div>
+      >{{ feed.feed_location_friendly }}</small>
+    </router-link>
     <div class="block lg:hidden">
       <button
         class="flex items-center px-3 py-2 border rounded text-teal-200 border-teal-400 hover:text-white hover:border-white"
       >
-        <svg class="fill-current h-3 w-3" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+        <svg
+          class="fill-current h-3 w-3"
+          viewBox="0 0 20 20"
+          xmlns="http://www.w3.org/2000/svg"
+        >
           <title>Menu</title>
           <path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z" />
         </svg>
@@ -60,8 +89,7 @@
 }
 </style>
 <script>
-import { mapState } from 'vuex'
-import { routes } from '@/router'
+import gql from 'graphql-tag'
 
 export default {
   data: function () {
@@ -70,16 +98,25 @@ export default {
     }
   },
   computed: {
-    ...mapState(['currentFeed']),
-    views: () => {
-      return routes.filter((e) => {
-        return e.showInSidebar
-      })
-    }
   },
   methods: {
-    clearFeed: function () {
-      this.$store.commit('clearFeed')
+  },
+  apollo: {
+    feed: {
+      query: gql`
+        query feed($feedIndex: Int!) {
+          feed(feed_index: $feedIndex) {
+            feed_publisher_name
+            feed_location_friendly
+          }
+        }
+      `,
+      variables () {
+        return {
+          feedIndex: parseInt(this.$route.params.feed)
+        }
+      },
+      skip () { return !this.$route.params.feed }
     }
   }
 }
