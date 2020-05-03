@@ -30,6 +30,7 @@
       <h2 class="text-lg border-b py-1 mb-1">
         Routes:
       </h2>
+      <small>Select a route to view on map.</small>
     </div>
     <div class="w-full">
       <p
