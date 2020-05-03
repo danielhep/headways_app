@@ -48,7 +48,7 @@ export default {
     return {
       selectedStop: {},
       selectedRoute: {},
-      showProperties: false
+      showProperties: true
     }
   },
   computed: {

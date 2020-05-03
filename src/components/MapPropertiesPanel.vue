@@ -1,8 +1,14 @@
 <template>
   <div
     v-if="feed"
-    class="w-full flex flex-col"
+    class="w-full flex flex-col max-w-md"
   >
+    <vue-element-loading
+      background-color="rgba(0, 0, 0, .6)"
+      :active="$apollo.loading"
+      color="white"
+      spinner="bar-fade-scale"
+    />
     <h2 class="text-lg w-full border-b py-1 mb-1">
       Stop Info
     </h2>
@@ -34,6 +40,14 @@
       >
         {{ route.route_short_name }}
       </p>
+    </div>
+  </div>
+  <div v-else>
+    <div v-if="$apollo.loading">
+      Loading...
+    </div>
+    <div v-else>
+      Please select a stop to view more info.
     </div>
   </div>
 </template>
