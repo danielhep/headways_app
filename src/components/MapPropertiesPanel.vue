@@ -15,7 +15,7 @@
       >Google Maps</small>
       <router-link
         class="small-button"
-        :to="{name: 'Stop Schedule', params: {feed: feed.feed_index}, query: {stop: selectedStop.stop_id}}"
+        :to="{name: 'Stop Schedule', query: {stop: selectedStop.stop_id}}"
       >
         Stop Schedule
       </router-link>

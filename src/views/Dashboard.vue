@@ -10,7 +10,7 @@
         </div>
         <div
           v-for="route in feed.routes"
-          :key="route.route_short_name"
+          :key="route._id"
           class="flex justify-start content-center cursor-pointer hover:text-accent-1 hover:bg-gray-lighter px-2 py-2"
         >
           <span class="bg-gray-400 h-2 w-2 m-2 rounded-full" />
@@ -44,6 +44,7 @@ export default {
               route_long_name
               route_short_name
               route_desc
+              _id
             }
           }
         }
