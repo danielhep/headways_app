@@ -181,7 +181,7 @@ export default {
           'line-cap': 'round'
         },
         paint: {
-          'line-color': '#ffd739',
+          'line-color': '#FF715B',
           'line-width': 2
         }
       })
