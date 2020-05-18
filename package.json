@@ -23,7 +23,7 @@
     "graphql": "^14.6.0",
     "lodash": "^4.17.15",
     "luxon": "^1.22.0",
-    "mapbox-gl": "^1.7.0",
+    "mapbox-gl": "^1.10.1",
     "postcss-normalize": "^9.0.0",
     "v-calendar": "^1.0.1",
     "vue": "^2.6.10",
