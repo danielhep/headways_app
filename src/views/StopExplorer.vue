@@ -1,68 +1,73 @@
 <template>
-  <div class="flex flex-row items-start" v-if="stopID">
+  <div
+    v-if="stopID"
+    class="flex flex-row items-start"
+  >
     <div class="flex-grow border-r-2 border-purple-800">
       <stop-times-table
         v-if="stopData"
+        :stop-schedule="stopData.stopSchedule"
+        :fs-threshold="fsThreshold"
+        :date="luxonSelectedDate"
         @selectedItems="selectedItems"
         @selectRoute="(route) => routes=[route]"
-        :stopSchedule="stopData.stopSchedule"
-        :fsThreshold="fsThreshold"
-        :date="luxonSelectedDate"
       />
     </div>
     <div class="w-1/3 px-3 pt-2 sticky top-0">
       <div>
         Selected date:
-        <v-date-picker v-model="selectedDate" is-dark>
-          <p class="inline-block small-input pl-1">{{selectedDate.toDateString()}}</p>
+        <v-date-picker
+          v-model="selectedDate"
+          is-dark
+        >
+          <p class="inline-block small-input pl-1">
+            {{ selectedDate.toDateString() }}
+          </p>
         </v-date-picker>
       </div>
       <div class="mt-2">
         <span>Threshold for frequent service:</span>
         <input
+          v-model="fsThreshold"
           v-autowidth="{maxWidth: '960px', minWidth: '10px', comfortZone: 0}"
           class="small-input pl-1"
-          v-model="fsThreshold"
           type="number"
-        /> minutes.
+        > minutes.
         <vue-slider
+          v-model="fsThreshold"
           class="mt-1"
           tooltip="none"
           :max="120"
           :min="1"
           :contained="true"
-          v-model="fsThreshold"
-        ></vue-slider>
+        />
       </div>
-      <div class="w-full mt-2">
-        <multiselect
-          v-model="routes"
-          class="w-full"
-          :options="stopData ? stopData.stopInfo.routes : []"
-          :multiple="true"
-          :close-on-select="false"
-          :clear-on-select="false"
-          :preserve-search="true"
-          placeholder="Pick some"
-          label="route_short_name"
-          track-by="route_id"
-        ></multiselect>
-      </div>
-      <div v-if="stats.loaded" class="border-t-2 mt-4 pt-4 border-white">
-        <h2 class="font-display text-2xl">Stats for selection:</h2>
-        <p>Average gap: {{stats.avgGap}} minutes.</p>
-        <p>Total runs: {{stats.totRuns}} runs.</p>
+      <!-- <div class="w-full mt-2" /> -->
+      <div
+        v-if="stats.loaded"
+        class="border-t-2 mt-4 pt-4 border-white"
+      >
+        <h2 class="font-display text-2xl">
+          Stats for selection:
+        </h2>
+        <p>Average gap: {{ stats.avgGap }} minutes.</p>
+        <p>Total runs: {{ stats.totRuns }} runs.</p>
       </div>
     </div>
   </div>
-  <div class="text-center" v-else>
-    <p class="mt-4">Please select a stop on the Map or enter a stop ID below and press enter.</p>
+  <div
+    v-else
+    class="text-center"
+  >
+    <p class="mt-4">
+      Please select a stop on the Map or enter a stop ID below and press enter.
+    </p>
     <input
+      v-model="stopIDInput"
       class="mt-4 bg-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block m-auto appearance-none leading-normal"
       placeholder="Stop ID"
-      v-model="stopIDInput"
       @keyup.enter="updateQuery"
-    />
+    >
   </div>
 </template>
 
@@ -70,13 +75,10 @@
 import StopTimesTable from '@/components/StopTimesTable.vue'
 import { DateTime, Duration } from 'luxon'
 
-import Multiselect from 'vue-multiselect'
 import gql from 'graphql-tag'
 
-import 'vue-multiselect/dist/vue-multiselect.min.css'
-
 export default {
-  components: { StopTimesTable, Multiselect },
+  components: { StopTimesTable },
   data () {
     return {
       fsThreshold: 15,
@@ -89,6 +91,12 @@ export default {
         loaded: false
       }
     }
+  },
+  computed: {
+    feedIndex () { return parseInt(this.$route.params.feed) },
+    stopID () { return this.$route.query.stop },
+    luxonSelectedDate () { return DateTime.fromJSDate(this.selectedDate) },
+    selectedRouteIds () { return this.routes.map(val => val.route_id) }
   },
   methods: {
     selectedItems (items) {
@@ -108,12 +116,6 @@ export default {
         }
       })
     }
-  },
-  computed: {
-    feedIndex () { return parseInt(this.$route.params.feed) },
-    stopID () { return this.$route.query.stop },
-    luxonSelectedDate () { return DateTime.fromJSDate(this.selectedDate) },
-    selectedRouteIds () { return this.routes.map(val => val.route_id) }
   },
   apollo: {
     stopData: {
