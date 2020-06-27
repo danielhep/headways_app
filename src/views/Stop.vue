@@ -97,6 +97,9 @@ export default {
   computed: {
     luxonSelectedDate () { return DateTime.fromJSDate(this.selectedDate) }
   },
+  deactivated () {
+    this.$destroy()
+  },
   apollo: {
     feed: {
       query: gql`query stopData($stopID: ID!, $feedIndex: Int, $date: Date!, $routes: [ID]) {
