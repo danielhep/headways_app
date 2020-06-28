@@ -10,8 +10,8 @@ module.exports = {
       colors: {
         'gray-850': '#374357',
         'gray-dark': '#121819',
-        'gray-lighter': '#202829',
         'gray-light': '#4B5354',
+        'gray-lighter': '#202829',
         'accent-1': '#ff715b',
         'accent-2': '#700353',
         textclr: '#dadada'

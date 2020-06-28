@@ -30,7 +30,7 @@ const routes = [
         path: 'stop',
         name: 'Stop Schedule',
         icon: 'map-marker-alt',
-        component: () => import('../views/StopExplorer.vue')
+        component: () => import('../views/Stop.vue')
       }
     ]
   }

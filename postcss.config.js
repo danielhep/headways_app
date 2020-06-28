@@ -18,7 +18,8 @@ const purgecss = postcssPurgecss({
   whitelistPatterns: [
     /-(leave|enter|appear)(|-(to|from|active))$/, /^(?!(|.*?:)cursor-move).+-move$/, /^router-link(|-exact)-active$/,
     /.*multiselect.*/,
-    /.*vue-slider.*/
+    /.*vue-slider.*/,
+    /vs__.*/
   ]
 })
 

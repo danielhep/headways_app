@@ -1,7 +1,10 @@
 @tailwind base;
 @tailwind components;
 
+$vs-border-color: #4B5354;
+
 @import url('https://fonts.googleapis.com/css?family=Open+Sans&display=swap');
+@import "vue-select/src/scss/vue-select.scss";
 
 html {
     line-height: 1;
@@ -34,28 +37,5 @@ input::-webkit-inner-spin-button {
   margin: 0;
 }
 
-.vue-slider-process {
-    @apply bg-purple-700 !important;
-}
-
-.multiselect__tag {
-    @apply bg-purple-700 !important;
-}
-
-.multiselect__tag-icon::after {
-    @apply text-white !important;
-}
-
-.multiselect__tag-icon:hover {
-    @apply bg-purple-900 !important;
-}
-
-.multiselect__tags {
-    @apply bg-transparent !important;
-}
-
-.multiselect__option--highlight {
-    @apply bg-purple-700 font-bold !important;
-}
 
 @tailwind utilities;

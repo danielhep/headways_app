@@ -77,7 +77,7 @@ export default {
             shapes
           }
         }`,
-      update (data) { console.log(data); return data.routes_by_id[0].shapes },
+      update (data) { return data.routes_by_id[0].shapes },
       variables () {
         return {
           feedIndex: this.feedIndex,
