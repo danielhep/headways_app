@@ -73,14 +73,10 @@
 </template>
 
 <script>
-import { DateTime, Duration } from 'luxon'
+import { DateTime } from 'luxon'
 import vSelect from 'vue-select'
 import gql from 'graphql-tag'
 import StopTimesTable from '@/components/StopTimesTable.vue'
-const durationToCheck = (threshold) => (row) => {
-  // const mins = Duration.fromISO(row.time_since_last).as('minutes')
-
-}
 
 export default {
   components: { vSelect, StopTimesTable },
@@ -91,21 +87,15 @@ export default {
       selectedRoutes: [],
       fields: [
         {
-          field: 'trip.route.route_short_name',
           label: 'Route'
         },
         {
-          field: 'departure_time',
-          label: 'Departure Time',
-          formatFn: x => Duration.fromISO(x).toFormat('hh:mm'),
-          sortFn: (x, y) => (Duration.fromISO(x).as('seconds') > Duration.fromISO(y).as('seconds')) ? -1 : 1
+          label: 'Departure Time'
         },
         {
-          field: 'trip.trip_headsign',
           label: 'Headsign'
         },
         {
-          field: durationToCheck(this.fsThreshold),
           label: 'Frequent'
         }
       ]
@@ -152,7 +142,3 @@ export default {
   }
 }
 </script>
-
-<style>
-
-</style>
