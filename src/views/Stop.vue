@@ -53,10 +53,10 @@
       </div>
     </div>
     <div class="flex-grow">
-      <vue-good-table
-        :rows="feed.stop.stop_times"
+      <stop-times-table
         :columns="fields"
-        theme="nocturnal"
+        :rows="feed.stop.stop_times"
+        :fs-threshold="fsThreshold"
       />
     </div>
   </div>
@@ -66,11 +66,15 @@
 import { DateTime, Duration } from 'luxon'
 import vSelect from 'vue-select'
 import gql from 'graphql-tag'
-import { VueGoodTable } from 'vue-good-table'
 import 'vue-good-table/dist/vue-good-table.css'
+import StopTimesTable from '@/components/StopTimesTable.vue'
+const durationToCheck = (threshold) => (row) => {
+  // const mins = Duration.fromISO(row.time_since_last).as('minutes')
+
+}
 
 export default {
-  components: { vSelect, VueGoodTable },
+  components: { vSelect, StopTimesTable },
   data () {
     return {
       selectedDate: new Date(),
@@ -90,6 +94,10 @@ export default {
         {
           field: 'trip.trip_headsign',
           label: 'Headsign'
+        },
+        {
+          field: durationToCheck(this.fsThreshold),
+          label: 'Frequent'
         }
       ]
     }
