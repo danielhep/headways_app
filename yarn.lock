@@ -12624,10 +12624,10 @@ vue-hot-reload-api@^2.3.0:
   resolved "https://registry.yarnpkg.com/vue-hot-reload-api/-/vue-hot-reload-api-2.3.4.tgz#532955cc1eb208a3d990b3a9f9a70574657e08f2"
   integrity sha512-BXq3jwIagosjgNVae6tkHzzIk6a8MHFtzAdwhnV5VlvPTFxDCvIttgSiHWjdGoTJvXtmRu5HacExfdarRcFhog==
 
-vue-input-autowidth@^1.0.9:
-  version "1.0.9"
-  resolved "https://registry.yarnpkg.com/vue-input-autowidth/-/vue-input-autowidth-1.0.9.tgz#8f615fa81323937035787c1049e703bcbd41fe53"
-  integrity sha512-2yWwRKRt8SIgNE9YR4Yv543FS2JgoRELKNoqRybfdJRiAjWImfIk1JufKGrAjynGIH+vqdPHYf5S1t9wp78PqA==
+vue-input-autowidth@^1.0.10:
+  version "1.0.10"
+  resolved "https://registry.yarnpkg.com/vue-input-autowidth/-/vue-input-autowidth-1.0.10.tgz#d88c6343036e0482d53050a77fd7643a30cbcc69"
+  integrity sha512-+PpSoqeQkvtCtIVpx47ZY2YMLp1dSiLCgCh/xOt0mCBoDulpQ9DufpYcGX8z9edQuWak9AKHLVGGZLXU47PWbw==
   dependencies:
     es6-object-assign "^1.1.0"
 
