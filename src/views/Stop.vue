@@ -1,5 +1,15 @@
 <template>
-  <div class="w-full flex">
+  <vue-element-loading
+    v-if="$apollo.loading"
+    background-color="rgba(0, 0, 0, .6)"
+    :active="$apollo.loading"
+    color="white"
+    spinner="bar-fade-scale"
+  />
+  <div
+    v-else
+    class="w-full flex"
+  >
     <div class="w-1/3 px-3 pt-2 ">
       <div class="sticky top-0">
         <div>
@@ -66,7 +76,6 @@
 import { DateTime, Duration } from 'luxon'
 import vSelect from 'vue-select'
 import gql from 'graphql-tag'
-import 'vue-good-table/dist/vue-good-table.css'
 import StopTimesTable from '@/components/StopTimesTable.vue'
 const durationToCheck = (threshold) => (row) => {
   // const mins = Duration.fromISO(row.time_since_last).as('minutes')
