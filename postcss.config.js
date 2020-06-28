@@ -1,8 +1,8 @@
 // postcss.config.js
 const autoprefixer = require('autoprefixer')
 const tailwindcss = require('tailwindcss')
-
-const postcssPurgecss = require(`@fullhuman/postcss-purgecss`)
+const postcssNormalize = require('postcss-normalize')
+const postcssPurgecss = require('@fullhuman/postcss-purgecss')
 
 const purgecss = postcssPurgecss({
   // Specify the paths to all of the template files in your project.
@@ -26,6 +26,7 @@ module.exports = {
   plugins: [
     tailwindcss,
     autoprefixer,
+    postcssNormalize(),
     ...process.env.NODE_ENV === 'production'
       ? [purgecss] : []
   ]

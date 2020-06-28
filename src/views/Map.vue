@@ -1,48 +1,60 @@
 <template>
-  <multipane @paneResize="paneResize" class="vertical-panes">
-    <div class="w-2/3">
-      <vue-element-loading
-        background-color="rgba(0, 0, 0, .6)"
-        :active="!stops.length"
-        color="white"
-        spinner="bar-fade-scale"
-      />
-      <Map
-        @mapLoaded="mapLoaded"
-        @stopSelected="stopSelected"
-        :routeShapes="shapes"
-        :stops="stops"
+  <div class="w-full h-full relative">
+    <vue-element-loading
+      background-color="rgba(0, 0, 0, .6)"
+      :active="$apollo.loading"
+      color="white"
+      spinner="bar-fade-scale"
+    />
+    <Map
+      v-if="!$apollo.queries.feed.loading"
+      :route-shapes="shape"
+      :stops="feed.stops_json"
+      :center="[feed.feed_lon, feed.feed_lat]"
+      @mapLoaded="mapLoaded"
+      @stopSelected="stopSelected"
+    />
+    <div class="z-10 absolute bg-gray-light border border-accent-1 shadow m-4 top-0 left-0 rounded">
+      <div class="bg-accent-1 w-full p-2 flex">
+        <div class="pr-4 flex-grow font-bold flex items-center">
+          Properties
+        </div>
+        <font-awesome-icon
+          border
+          fixed-width
+          class="cursor-pointer"
+          :icon="showProperties ? 'window-minimize' : 'window-maximize'"
+          @click="showProperties = !showProperties"
+        />
+      </div>
+      <map-properties-panel
+        v-if="showProperties"
+        :selected-stop="selectedStop"
+        class="p-2"
+        @routeSelected="(route) => selectedRoute=route"
       />
     </div>
-    <multipane-resizer class="bg-purple-700" />
-    <div class="p-3 px-5 w-1/3">
-      <map-sidebar @routeSelected="(route) => selectedRoute=route" :selected-stop="selectedStop" />
-    </div>
-  </multipane>
+  </div>
 </template>
 
 <script>
 import Map from '@/components/Map.vue'
-import MapSidebar from '@/components/MapSidebar.vue'
-import { Multipane, MultipaneResizer } from 'vue-multipane'
-import { mapState } from 'vuex'
+import MapPropertiesPanel from '@/components/MapPropertiesPanel.vue'
 import gql from 'graphql-tag'
-import _ from 'lodash/fp'
 
 export default {
-  components: { Map, MapSidebar, Multipane, MultipaneResizer },
+  components: { Map, MapPropertiesPanel },
   data: function () {
     return {
       selectedStop: {},
-      selectedRoute: ''
+      selectedRoute: {},
+      showProperties: true
     }
   },
   computed: {
-    ...mapState(['stops']),
     feedIndex () { return parseInt(this.$route.params.feed) }
   },
   created () {
-    this.$store.dispatch('getStops')
   },
   methods: {
     paneResize: function () {
@@ -58,32 +70,35 @@ export default {
     }
   },
   apollo: {
-    shapes: {
-      query: gql`query route($feedIndex: Int, $routeShortNames: [String!]) {
-        feed(feed_index: $feedIndex) {
-          routes_by_short_name(route_short_names: $routeShortNames) {
+    shape: {
+      query: gql`
+        query shape($routeIDs: [ID]) {
+          routes_by_id(route_ids: $routeIDs) {
             shapes
           }
-        }
-      }
-      `,
-      update (data) {
-        const out = _.flow([
-          _.path('feed.routes_by_short_name'),
-          _.flatMap(_.path('shapes'))
-        ])(data)
-
-        return out
-      },
+        }`,
+      update (data) { console.log(data); return data.routes_by_id[0].shapes },
       variables () {
         return {
           feedIndex: this.feedIndex,
-          routeShortNames: this.selectedRoute
+          routeIDs: [this.selectedRoute._id]
         }
       },
-      skip () {
-        console.log(this.selectedRoute === '')
-        return this.selectedRoute === ''
+      skip () { return !this.selectedRoute._id }
+    },
+    feed: {
+      query: gql`query feed($feedIndex: Int) {
+        feed(feed_index: $feedIndex) {
+          feed_lat
+          feed_lon
+          stops_json
+        }
+      }
+      `,
+      variables () {
+        return {
+          feedIndex: this.feedIndex
+        }
       }
     }
   }
@@ -91,34 +106,12 @@ export default {
 </script>
 
 <style scoped>
-.vertical-panes {
-  width: 100%;
-  height: 100%;
-}
-
-.multipane-resizer {
-  width: 10px;
-}
-
-.multipane-resizer::before {
-  content: "";
-  margin-left: -2px;
-  height: 40px;
-  width: 4px;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  border-radius: 2px;
-  background-color: white;
-}
-
-.vertical-panes > .pane {
-  text-align: left;
-  padding: 15px;
+.slide-enter-active {
+  transition: all 0.3s;
   overflow: hidden;
-  background: #eee;
 }
-.vertical-panes > .pane ~ .pane {
-  border-left: 3px solid #ccc;
+
+.slide-enter {
+  transform: scaleY(0) scaleX(0);
 }
 </style>

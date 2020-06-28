@@ -1,5 +1,8 @@
 <template>
-  <div id="map" class="h-full w-full"></div>
+  <div
+    id="map"
+    class="h-full w-full"
+  />
 </template>
 
 <script>
@@ -7,8 +10,8 @@
 import * as L from 'mapbox-gl'
 // import { MarkerClusterGroup } from 'leaflet.markercluster'
 import 'mapbox-gl/dist/mapbox-gl.css'
-import { mapState } from 'vuex'
 import _ from 'lodash/fp'
+import gql from 'graphql-tag'
 
 const useMousePointer = (map, layer) => {
   map.on('mouseenter', layer, function () {
@@ -19,7 +22,7 @@ const useMousePointer = (map, layer) => {
   })
 }
 export default {
-  props: ['stops', 'routeShapes'],
+  props: ['stops', 'routeShapes', 'center'],
   data: function () {
     return {
       mapboxKey: process.env.VUE_APP_MAPBOX_KEY,
@@ -28,6 +31,12 @@ export default {
       stop: {}
     }
   },
+  computed: {
+  },
+  watch: {
+    stops () { this.updateSource() },
+    routeShapes () { this.updateRouteShapes() }
+  },
   mounted () {
     this.mapbox = L
 
@@ -35,21 +44,31 @@ export default {
 
     const map = new L.Map({
       container: 'map',
-      center: [this.currentFeed.feed_lon, this.currentFeed.feed_lat],
+      center: this.center,
       zoom: 13,
       style: this.mapStyle
     })
 
     map.on('load', this.mapboxLoaded)
     this.map = map
-    this.$store.dispatch('getStops')
   },
-  computed: {
-    ...mapState(['currentFeed'])
-  },
-  watch: {
-    stops () { this.updateSource() },
-    routeShapes () { this.updateRouteShapes() }
+  apollo: {
+    feed: {
+      query: gql`
+        query feed($feedIndex: Int!) {
+          feed(feed_index: $feedIndex) {
+            feed_lat
+            feed_lon
+          }
+        }
+      `,
+      variables () {
+        return {
+          feedIndex: parseInt(this.$route.params.feed)
+        }
+      },
+      skip () { return !this.$route.params.feed }
+    }
   },
   methods: {
     updateSource () {
@@ -63,7 +82,7 @@ export default {
     },
     updateRouteShapes () {
       const features = []
-      for (let shape of this.routeShapes) {
+      for (const shape of this.routeShapes) {
         features.push({ type: 'Feature', geometry: shape })
       }
       this.map.getSource('routeLinesSource').setData({
@@ -75,7 +94,7 @@ export default {
     },
     zoomToSelectedRoute () {
       const coordinates = _.flatMap(s => { return s.coordinates })(this.routeShapes)
-      let bounds = coordinates.reduce(function (bounds, coord) {
+      const bounds = coordinates.reduce(function (bounds, coord) {
         return bounds.extend(coord)
       }, new L.LngLatBounds(coordinates[0], coordinates[0]))
 
@@ -141,11 +160,11 @@ export default {
       })
 
       map.addLayer({
-        'id': 'stopsLayer',
-        'type': 'circle',
-        'source': 'stopsSource',
+        id: 'stopsLayer',
+        type: 'circle',
+        source: 'stopsSource',
         filter: ['!', ['has', 'point_count']],
-        'paint': {
+        paint: {
           'circle-color': '#9852f9',
           'circle-radius': 4,
           'circle-stroke-width': 1,
@@ -154,15 +173,15 @@ export default {
       })
 
       map.addLayer({
-        'id': 'routeLines',
-        'type': 'line',
-        'source': 'routeLinesSource',
-        'layout': {
+        id: 'routeLines',
+        type: 'line',
+        source: 'routeLinesSource',
+        layout: {
           'line-join': 'round',
           'line-cap': 'round'
         },
-        'paint': {
-          'line-color': '#ffd739',
+        paint: {
+          'line-color': '#FF715B',
           'line-width': 2
         }
       })
@@ -190,6 +209,15 @@ export default {
         this.$emit('stopSelected', e.features[0].properties)
         this.stop = e.features[0].properties
       })
+
+      map.addControl(
+        new L.GeolocateControl({
+          positionOptions: {
+            enableHighAccuracy: true
+          },
+          trackUserLocation: true
+        })
+      )
 
       useMousePointer(map, 'clusters')
       useMousePointer(map, 'stopsLayer')

@@ -1,16 +1,23 @@
 @tailwind base;
 @tailwind components;
 
+@import url('https://fonts.googleapis.com/css?family=Open+Sans&display=swap');
+
+html {
+    line-height: 1;
+    @apply font-display text-textclr;
+}
+
 .small-button {
     @apply cursor-pointer p-1 rounded mx-2 border border-gray-500 text-sm;
 }
 
 .small-button:hover {
-    @apply border-purple-700
+    @apply border-accent-1
 }
 
 .route-chip {
-    @apply bg-gray-200 cursor-pointer text-black px-1 rounded-lg mx-1 border-2 text-xs inline-block mt-1
+    @apply bg-gray-200 cursor-pointer text-black px-1 rounded-lg mx-1 border-2 text-xs inline-block mt-1;
 }
 
 .small-input {
