@@ -1,55 +1,56 @@
 <template>
-  <vue-element-loading
-    v-if="$apollo.loading"
-    background-color="rgba(0, 0, 0, .6)"
-    :active="$apollo.loading"
-    color="white"
-    spinner="bar-fade-scale"
-  />
-  <div
-    v-else
-    class="w-full flex"
-  >
-    <div class="w-1/3 px-3 pt-2 ">
-      <div class="sticky top-0">
-        <div>
-          Selected date:
-          <v-date-picker
-            v-model="selectedDate"
-            is-dark
-          >
-            <p class="inline-block small-input pl-1">
-              {{ selectedDate.toDateString() }}
-            </p>
-          </v-date-picker>
-        </div>
-        <div class="mt-2">
-          <span>Threshold for frequent service:</span>
-          <input
-            v-model="fsThreshold"
-            v-autowidth="{maxWidth: '960px', minWidth: '10px', comfortZone: 0}"
-            class="small-input pl-1"
-            type="number"
-          > minutes.
-          <vue-slider
-            v-model="fsThreshold"
-            class="mt-1"
-            tooltip="none"
-            :max="120"
-            :min="1"
-            :contained="true"
-          />
-        </div>
-        <div class="mt-2">
-          <v-select
-            v-model="selectedRoutes"
-            multiple
-            label="route_short_name"
-            :options="feed.stop.routes"
-          />
-        </div>
-        <div class="w-full mt-2">
-        <!-- <div
+  <div>
+    <vue-element-loading
+      v-if="$apollo.loading"
+      background-color="rgba(0, 0, 0, .6)"
+      :active="$apollo.loading"
+      color="white"
+      spinner="bar-fade-scale"
+    />
+    <div
+      v-else
+      class="w-full flex"
+    >
+      <div class="w-1/3 px-3 pt-2 ">
+        <div class="sticky top-0">
+          <div>
+            Selected date:
+            <v-date-picker
+              v-model="selectedDate"
+              is-dark
+            >
+              <p class="inline-block small-input pl-1">
+                {{ selectedDate.toDateString() }}
+              </p>
+            </v-date-picker>
+          </div>
+          <div class="mt-2">
+            <span>Threshold for frequent service:</span>
+            <input
+              v-model="fsThreshold"
+              v-autowidth="{maxWidth: '960px', minWidth: '10px', comfortZone: 0}"
+              class="small-input pl-1"
+              type="number"
+            > minutes.
+            <vue-slider
+              v-model="fsThreshold"
+              class="mt-1"
+              tooltip="none"
+              :max="120"
+              :min="1"
+              :contained="true"
+            />
+          </div>
+          <div class="mt-2">
+            <v-select
+              v-model="selectedRoutes"
+              multiple
+              label="route_short_name"
+              :options="feed.stop.routes"
+            />
+          </div>
+          <div class="w-full mt-2">
+            <!-- <div
       v-if="stats.loaded"
       class="border-t-2 mt-4 pt-4 border-white"
     >
@@ -59,15 +60,16 @@
       <p>Average gap: {{ stats.avgGap }} minutes.</p>
       <p>Total runs: {{ stats.totRuns }} runs.</p>
     </div> -->
+          </div>
         </div>
       </div>
-    </div>
-    <div class="flex-grow">
-      <stop-times-table
-        :columns="fields"
-        :rows="feed.stop.stop_times"
-        :fs-threshold="fsThreshold"
-      />
+      <div class="flex-grow">
+        <stop-times-table
+          :columns="fields"
+          :rows="feed.stop.stop_times"
+          :fs-threshold="fsThreshold"
+        />
+      </div>
     </div>
   </div>
 </template>
