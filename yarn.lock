@@ -13059,11 +13059,12 @@ vue-sfc-descriptor-to-string@^1.0.0:
   dependencies:
     indent-string "^3.2.0"
 
-vue-slider-component@^3.1.1:
-  version "3.1.1"
-  resolved "https://registry.yarnpkg.com/vue-slider-component/-/vue-slider-component-3.1.1.tgz#00727a3d3eee9a4e4e940a9f45afdfcefbb99308"
-  integrity sha512-5BagCDOqK7q3WRdQrT16cjfSDPp1/VxKDk0i92u1tRT03fPJKzYmkbWSeJVHuET5IB9nVWuTGUPgUo0jTzQ3QQ==
+vue-slider-component@^3.2.7:
+  version "3.2.7"
+  resolved "https://registry.yarnpkg.com/vue-slider-component/-/vue-slider-component-3.2.7.tgz#1d49c6a6e5bc2e984a30e999248e3c7253e6be06"
+  integrity sha512-CTk9vWvewbdhcFbTCsW7EHGNPmrdi5xpRceW+BAPSYbmyN2Y5ZE1c5F7imQDDqxhNxtX+DObvuBlVSMDp9aVeg==
   dependencies:
+    core-js "^3.6.5"
     vue-property-decorator "^8.0.0"
 
 vue-style-loader@^4.1.0, vue-style-loader@^4.1.2:
