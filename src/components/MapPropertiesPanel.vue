@@ -38,7 +38,7 @@
         v-for="route in feed.stop.routes"
         :key="route._id"
         class="route-chip"
-        @click="$emit('routeSelected', route); selectedRoute = route;"
+        @click="$emit('route-selected', route); selectedRoute = route;"
       >
         {{ route.route_short_name }}
       </p>

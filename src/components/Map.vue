@@ -78,6 +78,16 @@ export default {
           type: 'FeatureCollection',
           features: this.stops
         })
+
+        const coordinates = _.map(s => { return s.geometry.coordinates })(this.stops)
+        const bounds = coordinates.reduce(function (bounds, coord) {
+          return bounds.extend(coord)
+        }, new L.LngLatBounds(coordinates[0], coordinates[1])) // start with a latlngbounds of the first coordinates
+
+        this.map.fitBounds(bounds, {
+          padding: 20,
+          animate: false
+        })
       }
     },
     updateRouteShapes () {
@@ -96,7 +106,7 @@ export default {
       const coordinates = _.flatMap(s => { return s.coordinates })(this.routeShapes)
       const bounds = coordinates.reduce(function (bounds, coord) {
         return bounds.extend(coord)
-      }, new L.LngLatBounds(coordinates[0], coordinates[0]))
+      }, new L.LngLatBounds(coordinates[0], coordinates[1])) // start with a latlngbounds of the first coordinate
 
       this.map.fitBounds(bounds, {
         padding: 20
@@ -104,7 +114,7 @@ export default {
     },
     mapboxLoaded: async function (e) {
       const map = this.map
-      this.$emit('mapLoaded', this.map)
+      this.$emit('map-loaded', this.map)
 
       map.addSource('stopsSource', {
         type: 'geojson',
@@ -206,7 +216,7 @@ export default {
       })
 
       map.on('click', 'stopsLayer', (e) => {
-        this.$emit('stopSelected', e.features[0].properties)
+        this.$emit('stop-selected', e.features[0].properties)
         this.stop = e.features[0].properties
       })
 

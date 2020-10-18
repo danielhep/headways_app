@@ -11,8 +11,8 @@
       :route-shapes="shape"
       :stops="feed.stops_json"
       :center="[feed.feed_lon, feed.feed_lat]"
-      @mapLoaded="mapLoaded"
-      @stopSelected="stopSelected"
+      @map-loaded="mapLoaded"
+      @stop-selected="stopSelected"
     />
     <div class="z-10 absolute bg-gray-light border border-accent-1 shadow m-4 top-0 left-0 rounded">
       <div class="bg-accent-1 w-full p-2 flex">
@@ -31,7 +31,7 @@
         v-if="showProperties"
         :selected-stop="selectedStop"
         class="p-2"
-        @routeSelected="(route) => selectedRoute=route"
+        @route-selected="(route) => selectedRoute=route"
       />
     </div>
   </div>
