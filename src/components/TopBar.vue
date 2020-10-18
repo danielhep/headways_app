@@ -78,16 +78,6 @@
     </div>
   </nav>
 </template>
-<style scoped>
-.nav-button {
-  @apply px-3 border-b-2 cursor-pointer border-transparent flex flex-col justify-center font-bold;
-}
-
-.nav-button:hover,
-.nav-button.active {
-  @apply border-accent-1;
-}
-</style>
 <script>
 import gql from 'graphql-tag'
 
@@ -121,3 +111,14 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.nav-button {
+  @apply px-3 border-b-2 cursor-pointer border-transparent flex flex-col justify-center font-bold;
+}
+
+.nav-button:hover,
+.nav-button.active {
+  @apply border-accent-1;
+}
+</style>
