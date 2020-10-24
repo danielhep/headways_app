@@ -23,7 +23,7 @@
           {{ durationToTime(row.departure_time) }} <span
             v-if="row.time_since_last"
             class="text-gray-400 text-sm ml-1"
-          > {{ durationToMin(row.time_since_last) }} minutes </span>
+          > {{ durationToMin(row.time_since_last).toFixed(1) }} minutes </span>
         </td>
         <!-- TODO: Add next service day indicator if over 24 hours -->
         <td class=" table-cell">
