@@ -8,7 +8,7 @@
       spinner="bar-fade-scale"
     />
     <div
-      v-else
+      v-if="feed"
       class="w-full flex"
     >
       <div class="w-1/3 px-3 pt-2 ">
@@ -55,18 +55,6 @@
               label="route_short_name"
               :options="feed.stop.routes"
             />
-          </div>
-          <div class="w-full mt-2">
-            <!-- <div
-      v-if="stats.loaded"
-      class="border-t-2 mt-4 pt-4 border-white"
-    >
-      <h2 class="font-display text-2xl">
-        Stats for selection:
-      </h2>
-      <p>Average gap: {{ stats.avgGap }} minutes.</p>
-      <p>Total runs: {{ stats.totRuns }} runs.</p>
-    </div> -->
           </div>
         </div>
       </div>
