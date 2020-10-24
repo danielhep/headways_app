@@ -17,11 +17,18 @@
             Selected date:
             <v-date-picker
               v-model="selectedDate"
+              mode="date"
               is-dark
             >
-              <p class="inline-block small-input pl-1">
-                {{ selectedDate.toDateString() }}
-              </p>
+              <template #default="{inputValue, inputEvents}">
+                <input
+                  v-autowidth="{maxWidth: '960px'}"
+                  type="text"
+                  class="small-input pl-1"
+                  :value="inputValue"
+                  v-on="inputEvents"
+                >
+              </template>
             </v-date-picker>
           </div>
           <div class="mt-2">
