@@ -9,9 +9,15 @@ export default {
       chartoptions: {
         responsive: true,
         maintainAspectRatio: false,
+        legend: {
+          align: 'start'
+        },
         scales: {
           xAxes: [{
-            stacked: true
+            stacked: true,
+            ticks: {
+              display: false
+            }
           }],
           yAxes: [{
             stacked: true
