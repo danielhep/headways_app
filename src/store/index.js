@@ -15,9 +15,15 @@ export default new Vuex.Store({
     ],
     routes: [],
     stops: [],
-    currentFeed: null
+    currentFeed: null,
+    options: {
+      excludeAgencies: []
+    }
   },
   mutations: {
+    setExcludeAgencies (state, agencies) {
+      state.options.excludeAgencies = agencies
+    },
     setFeed (state, feed) {
       state.currentFeed = feed
     },

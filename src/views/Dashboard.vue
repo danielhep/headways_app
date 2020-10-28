@@ -2,7 +2,7 @@
   <div>
     <div class="flex flex-row">
       <route-list
-        v-if="!$apollo.loading"
+        v-if="feed"
         class="flex flex-col border-r border-accent-1"
         :agencies="feed.agencies"
       />
@@ -32,9 +32,9 @@ export default {
   apollo: {
     feed: {
       query: gql`
-        query($feedIndex: Int!) {
+        query($feedIndex: Int!, $excludeIDs: [ID]) {
           feed(feed_index: $feedIndex) {
-            agencies {
+            agencies(exclude: $excludeIDs) {
               agency_name
               agency_id
               routes {
@@ -50,7 +50,8 @@ export default {
       `,
       variables () {
         return {
-          feedIndex: parseInt(this.$route.params.feed)
+          feedIndex: parseInt(this.$route.params.feed),
+          excludeIDs: this.$store.state.options.excludeAgencies
         }
       }
     }

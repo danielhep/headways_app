@@ -7,7 +7,7 @@
       <bar-chart
         class="relative h-full"
         style="width: 10000px"
-        :chartdata="chartdata"
+        :chart-data="chartdata"
       />
     </div>
   </div>
@@ -42,7 +42,6 @@ export default {
   },
   methods: {
     tripCountFromRouteID (id, routes) {
-      console.log('hello')
       const route = routes.find(route => route._id === id)
       return route ? route.trips_count : null
     }
