@@ -62,7 +62,13 @@
         class="font-normal px-2 text-gray-400"
       >{{ feed.feed_location_friendly }}</small>
     </router-link>
-    <filters-dialog />
+    <filters-dialog>
+      <font-awesome-icon
+        class="mx-3 cursor-pointer"
+        size="lg"
+        icon="cogs"
+      />
+    </filters-dialog>
   </nav>
 </template>
 <script>

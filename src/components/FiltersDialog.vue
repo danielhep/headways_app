@@ -1,6 +1,6 @@
 <template>
   <div>
-    <a @click="show = !show">Hello</a>
+    <a @click="show = !show"><slot /></a>
     <div
       v-if="show"
       class="z-40 fixed w-full py-24 h-full top-0 left-0 flex items-center justify-center"

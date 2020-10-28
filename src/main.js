@@ -7,7 +7,7 @@ import './assets/styles/index.scss'
 import 'vue-slider-component/theme/default.css'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faMapMarkerAlt, faRoute, faClock, faMapMarker, faMap, faTimes, faCaretLeft, faCheckSquare, faCheckDouble, faColumns, faWindowMaximize, faWindowMinimize, faCheckCircle, faChevronDown, faChevronRight } from '@fortawesome/free-solid-svg-icons'
+import { faCogs, faMapMarkerAlt, faRoute, faClock, faMapMarker, faMap, faTimes, faCaretLeft, faCheckSquare, faCheckDouble, faColumns, faWindowMaximize, faWindowMinimize, faCheckCircle, faChevronDown, faChevronRight } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { gqlProvider } from './vue-apollo'
 import { sync } from 'vuex-router-sync'
@@ -25,7 +25,7 @@ Vue.component('VueElementLoading', VueElementLoading)
 
 Vue.use(VueInputAutowidth)
 
-library.add(faCheckDouble, faMapMarkerAlt, faRoute, faClock, faMapMarker, faMap, faColumns, faCheckCircle, faTimes, faCaretLeft, faCheckSquare, faWindowMaximize, faWindowMinimize, faChevronDown, faChevronRight)
+library.add(faCogs, faCheckDouble, faMapMarkerAlt, faRoute, faClock, faMapMarker, faMap, faColumns, faCheckCircle, faTimes, faCaretLeft, faCheckSquare, faWindowMaximize, faWindowMinimize, faChevronDown, faChevronRight)
 
 Vue.config.productionTip = false
 
